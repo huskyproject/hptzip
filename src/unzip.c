@@ -53,6 +53,9 @@ woven in by Terry Thorsen 1/2003.
 
 #ifdef ZLIBDL
 #include "hptzipdl.h"
+#ifdef __MSC__
+#pragma optimize("", off)
+#endif
 #endif
 
 #ifndef local

@@ -24,6 +24,9 @@
 
 #ifdef ZLIBDL
 #include "hptzipdl.h"
+#ifdef __MSC__
+#pragma optimize("", off)
+#endif
 #endif
 
 #ifndef local
