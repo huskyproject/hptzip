@@ -1,3 +1,15 @@
+2003-09-12 Friday 18:05  d_sergienko
+
+	* make/: makefile (1.8), makefile.inc (1.4), makefile.prg (1.5):
+	it's compiling now (work is still in progress...)
+
+2003-09-12 Friday 18:02  d_sergienko
+
+	* make/: makefile (1.7), makefile.inc (1.3), makefile.prg (1.4),
+	makefile.tgt (1.2), osdefs/lnx (1.4): makefile.tgt is no longer
+	needed (we autogenerate it now).  also project can't be compiled
+	now temporary (just need to save my work)
+
 2003-09-10 Wednesday 21:20  d_sergienko
 
 	* make/: makefile (1.6), makefile.inc (1.2), makefile.prg (1.3),
