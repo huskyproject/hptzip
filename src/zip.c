@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "zlib.h"
 #include "zip.h"
 
 #ifdef STDC
@@ -23,6 +22,9 @@
 #   include <errno.h>
 #endif
 
+#ifdef ZLIBDL
+#include "hptzipdl.h"
+#endif
 
 #ifndef local
 #  define local static

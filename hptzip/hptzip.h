@@ -17,5 +17,6 @@
 
 HUSKYEXT int UnPackWithZlib(char * zipfilename, char * filename_to_extract, char * dest_dir);
 HUSKYEXT int PackWithZlib(char * zipfilenamearg, char * filenameinzip);
+HUSKYEXT int init_hptzip(void);
 
 #endif

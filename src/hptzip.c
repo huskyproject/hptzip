@@ -32,8 +32,19 @@
 #include "iowin32.h"
 #endif
 
-#define DLLEXPORT
 #include "hptzip.h"
+
+#ifdef ZLIBDL
+#include "hptzipdl.h"
+crc32_func          *dl_crc32 = NULL;
+get_crc_table_func  *dl_get_crc_table = NULL;
+inflateInit2__func  *dl_inflateInit2_ = NULL;
+inflate_func        *dl_inflate = NULL;
+inflateEnd_func     *dl_inflateEnd = NULL;
+deflateInit2__func  *dl_deflateInit2_ = NULL;
+deflate_func        *dl_deflate = NULL;
+deflateEnd_func     *dl_deflateEnd = NULL;
+#endif
 
 #define CASESENSITIVITY (0)
 #define WRITEBUFFERSIZE (16384)
@@ -610,4 +621,27 @@ int PackWithZlib(char * zipfilenamearg, char * filenameinzip)
     return 0;
 }
 
-
+/* initialize zlib */
+int init_hptzip(void) {
+#ifndef ZLIBDL
+  /* always successful if not dynamic loading */
+  return 1;
+#elif defined(WIN32)
+  HINSTANCE hl = LoadLibrary("zlib.dll");
+  if (hl) {
+    dl_crc32 = (void*)GetProcAddress(hl, "crc32");
+    dl_get_crc_table = (void*)GetProcAddress(hl, "get_crc_table");
+    dl_inflateInit2_ = (void*)GetProcAddress(hl, "inflateInit2_");
+    dl_inflate = (void*)GetProcAddress(hl, "inflate");
+    dl_inflateEnd = (void*)GetProcAddress(hl, "inflateEnd");
+    dl_deflateInit2_ = (void*)GetProcAddress(hl, "deflateInit2_");
+    dl_deflate = (void*)GetProcAddress(hl, "deflate");
+    dl_deflateEnd = (void*)GetProcAddress(hl, "deflateEnd");
+  }
+  return dl_crc32 && dl_get_crc_table 
+         && dl_inflateInit2_ && dl_inflate && dl_inflateEnd
+         && dl_deflateInit2_ && dl_deflate && dl_deflateEnd;
+#else
+#  error "ZLIBDL is not supported for this system"
+#endif
+}

@@ -1,7 +1,7 @@
 # Microsoft Visual C++ Makefile for build hptzip DLL
 
 CC=     cl
-CFLAGS= -nologo -MD -Zp1
+CFLAGS= -nologo -MD -Zp1 -D"DLLEXPORT"
 CINCL	= -I..\..\huskylib -I..\hptzip
 CDEFS=  -D__NT__ -DNT -D_CONSOLE -D_MAKE_DLL -DWIN32 -D_WINDOWS -D_DLL -DZLIB_DLL
 COPT=   -O2

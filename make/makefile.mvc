@@ -1,0 +1,46 @@
+# Microsoft Visual C++ Makefile for build hptzip static library
+
+# set to 1 for manual loading that doesn't require zlib.dll to run hpt.exe
+ZLIBDL=0
+
+!ifdef ZLIBDL
+CDEFSDL = -DZLIBDL
+!endif
+
+CC=     cl
+CFLAGS= -nologo -Zp1
+CINCL   = -I..\..\huskylib -I..\hptzip
+CDEFS=  -D__NT__ -DNT -D_CONSOLE -DWIN32 -D_WINDOWS $(CDEFSDL) -D"NOUNCRPYT"
+COPT=   -O2
+LINK=   link -nologo
+
+HPTZIPL   = hptzip.lib
+!ifndef ZLIBDL
+ZLIBDLL   = ..\zlib.lib
+!endif
+
+OBJS    = hptzip.obj\
+          ioapi.obj\
+          iowin32.obj\
+          unzip.obj\
+          zip.obj
+
+{..\src}.c.obj:
+        $(CC) $(CFLAGS) $(CINCL) $(CDEFS) $(COPT) -c $<
+
+all: $(HPTZIPL) test
+
+$(HPTZIPL): $(OBJS)
+        lib /out:$(HPTZIPL) $(OBJS) $(ZLIBDLL)
+
+test: test.obj
+        $(CC) test.obj $(HPTZIPL)
+
+clean:
+        -del *.obj
+        -del *.lib
+
+distclean: clean
+        -del *.exe
+        -del *.exp
+        -del *.dll
