@@ -1,0 +1,4 @@
+Поддержка zipInternal в hpt by Dmitriy Kazimirow
+для сборки сначала собрать hpt_zlib затем
+просто использовать hpt/make/makehptperlzip.mvcdll,
+hptzlib.dll/zlib.dll поместить в доступный по %PATH% каталог
