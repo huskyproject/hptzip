@@ -1,3 +1,4 @@
+include ../../huskymak.cfg
 include osdep.inc
 
 TOP=../..

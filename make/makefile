@@ -5,16 +5,13 @@
 # $Id$
 #
 
-include ../../huskymak.cfg
-include makefile.inc
-
 MODULENAME=hptzip
 VER_MAJOR=0
 VER_MINOR=1
 VER_RELEASE=0
 
-CFLAGS+=
-LFLAGS+=
+CFLAGS+= -I../hptzip -I$(INCDIR)
+LFLAGS+= -L../../build/$(PLATFORM)/lib -I$(LIBDIR)
 
 SRCS_libhptzip=hptzip.c zip.c unzip.c
 ifeq ($(PLATFORM),win32)

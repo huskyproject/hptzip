@@ -1,3 +1,5 @@
+include makefile.inc
+
 .PRECIOUS : $(OBJPATH)/%$(OBJEXT)
 
 -include makefile.tgt
@@ -17,7 +19,7 @@ mksh2lib=$(BUILTLIBPATH)/$(LIBPREFIX)$(1)$(SHLIBSUFFIX).$(VER_MAJOR).$(VER_MINOR
 mksh1lib=$(BUILTLIBPATH)/$(LIBPREFIX)$(1)$(SHLIBSUFFIX).$(VER_MAJOR)
 mkstlib=$(BUILTLIBPATH)/$(LIBPREFIX)$(1)$(STLIBSUFFIX)
 src2obj=$(addprefix $(OBJPATH)/,$(1:.c=$(OBJEXT)))
-getobjs=$(OBJS_$(1)) $(call src2obj,$(SRCS_$(1))))
+getobjs=$(OBJS_$(1)) $(call src2obj,$(SRCS_$(1)))
 
 define build_bin
    		@echo -ne "$(1): $(OBJS_$(notdir $(1)))\n\t\t@$(CC) -o $(1) $(LFLAGS) $(OBJS_$(notdir $(1)))" > makefile.tgt
