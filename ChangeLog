@@ -1,3 +1,23 @@
+2003-09-19 Friday 18:27  d_sergienko
+
+	* make/makefile.prg (1.9): chandeg gmake -> $(MAKE). Thanx To Pavel
+	Gulchouk.
+
+2003-09-19 Friday 18:11  d_sergienko
+
+	* make/makefile.prg (1.8): 
+	changed make -> gmake
+
+2003-09-19 Friday 17:41  d_sergienko
+
+	* make/: makefile (1.9), makefile.prg (1.7): moved makefile.inc
+	upwards
+
+2003-09-19 Friday 09:51  d_sergienko
+
+	* make/osdefs/bsd (1.5): 
+	added some variables for bsd
+
 2003-09-18 Thursday 20:44  d_sergienko
 
 	* make/makefile.prg (1.6): fix shared library internal name (strip
