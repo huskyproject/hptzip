@@ -338,7 +338,7 @@ int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
 
         if (fout!=NULL)
         {
-            printf(" extracting: %s\n",write_filename);
+            /*printf(" extracting: %s\n",write_filename);*/
 
             do
             {
@@ -428,7 +428,7 @@ int do_extract_onefile(uf,filename,opt_extract_without_path,opt_overwrite,passwo
     int err = UNZ_OK;
     if (unzLocateFile(uf,filename,CASESENSITIVITY)!=UNZ_OK)
     {
-        printf("file %s not found in the zipfile\n",filename);
+        /*printf("file %s not found in the zipfile\n",filename);*/
         return 2;
     }
 
@@ -467,7 +467,7 @@ int UnPackWithZlib(char * zipfilename, char * filename_to_extract, char * dest_d
         return 1;
     }
 
-    printf("%s opened\n",zipfilename);
+    /*printf("%s opened\n",zipfilename);*/
 
     strcpy(destdir,dest_dir);
     dsLen = strlen( dest_dir );
@@ -523,9 +523,10 @@ int PackWithZlib(char * zipfilenamearg, char * filenameinzip)
             printf("error opening %s\n",zipfilenamearg);
             err= ZIP_ERRNO;
         }
+/*
         else
             printf("creating %s\n",zipfilenamearg);
-
+*/
         {
             FILE * fin;
             int size_read;
