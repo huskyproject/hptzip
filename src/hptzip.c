@@ -32,6 +32,8 @@
 #include "iowin32.h"
 #endif
 
+#define DLLEXPORT
+#include <huskylib/huskyext.h>
 #include "hptzip.h"
 
 #ifdef ZLIBDL
