@@ -1,1 +1,0 @@
-* zipInternal support code corrected by Dmitriy Kazimirow
