@@ -271,7 +271,7 @@ int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
         char* write_filename;
         int skip=0;
 
-        if ((*popt_extract_without_path)==0)
+        if ((*popt_extract_without_path)==1)
         {
             destdir[dsLen] = '\0';
             strcat(destdir,filename_withoutpath);
