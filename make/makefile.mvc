@@ -3,7 +3,7 @@
 # set to 1 for manual loading that doesn't require zlib.dll to run hpt.exe
 ZLIBDL=0
 
-!ifdef ZLIBDL
+!if $(ZLIBDL) == 1
 CDEFSDL = -DZLIBDL
 !endif
 
@@ -15,7 +15,7 @@ COPT=   -O2
 LINK=   link -nologo
 
 HPTZIPL   = hptzip.lib
-!ifndef ZLIBDL
+!if $(ZLIBDL) != 1
 ZLIBDLL   = ..\zlib.lib
 !endif
 
