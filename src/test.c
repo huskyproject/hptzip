@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
   printf(" > deflateEnd()=%p\n", dl_deflateEnd);
 #endif
   {
-    uLong crc = crc32(0L, NULL, 0);;
+    unsigned long crc = crc32(0L, NULL, 0);;
     crc = crc32(0L, "val khokhlov", 12);
     printf("testing crc32(): %s\n", crc == 0xae16c6abL ? "OK" : "ERR");
   }
