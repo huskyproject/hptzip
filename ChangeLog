@@ -1,3 +1,7 @@
+2004-08-17 Tuesday 15:36  val_khokhlov
+
+	* make/makefile (1.11): get some vars from huskymak.cfg
+
 2004-01-21 Wednesday 03:59  andr_lukyanov
 
 	* make/: makefile.mvc (1.2), makefile.mvcdll (1.4): Fix MSVC
