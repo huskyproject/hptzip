@@ -1,0 +1,5 @@
+PLATFORM=lnx
+LIBPREFIX=lib
+LIBSUFFIX=.so
+SHAREDOPT= -shared -Wl,-soname,
+STATICOPT= -static
