@@ -16,6 +16,9 @@ else
 ifeq ($(shell uname),Linux)
   include $(OSDEFS)lnx
 else
+ifeq ($(shell uname),QNX)
+  include $(OSDEFS)qnx
+else
 ifeq ($(shell uname),FreeBSD)
   include $(OSDEFS)bsd
 endif  

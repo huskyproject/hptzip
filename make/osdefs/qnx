@@ -1,0 +1,6 @@
+PLATFORM=qnx
+LIBPREFIX=lib
+SHLIBSUFFIX=.so
+STLIBSUFFIX=.a
+SHAREDOPT= -shared -fPIC -Wl,-soname,
+STATICOPT= -static
