@@ -5,19 +5,23 @@
 # $Id$
 #
 
-include osdep.inc
+include ../../huskymak.cfg
+include makefile.inc
 
 TOP=../..
 
-# this is ugly, but don't know now how to make correctly. 
-# possibly use huskymak.cfg?
-# PLEASE DEFINE CORRECT PATHS HERE NOW !!!
-INCDIR+=../../huskylib
-LIBDIR+=../../huskylib
-# end ugly
+LIBNAME=hptzip
+VER_MAJOR=0
+VER_MINOR=1
+VER_RELEASE=0
 
-CFLAGS+= -I../hptzip -I$(INCDIR)
-LFLAGS+= -L$(LIBDIR) -lhusky
+LIBS+=husky z
+
+LINKLIBS=$(addprefix -l,$(LIBS))
+LIBPATHS=$(addprefix -L,$(LIBDIR))
+
+CFLAGS+= -I$(INCDIR) -I../hptzip
+LFLAGS+= $(LIBPATHS) $(LINKLIBS)
 
 SRCDIR=../src
 ifeq ($(PLATFORM),win32)
@@ -25,28 +29,9 @@ ifeq ($(PLATFORM),win32)
 else
   SRCS=hptzip.c zip.c unzip.c ioapi.c
 endif
-LIBNAME=hptzip
-VER_MAJOR=0
-VER_MINOR=1
-VER_RELEASE=0
 
-OBJPATH=$(TOP)/build/$(PLATFORM)
-TARGET=$(OBJPATH)/$(LIBPREFIX)$(LIBNAME)$(LIBSUFFIX).$(VER_MAJOR).$(VER_MINOR).$(VER_RELEASE)
-OBJS=$(addprefix $(OBJPATH)/,$(SRCS:.c=.o))
+TARGET=$(call mkshlib,$(LIBNAME))
 
-all: dirs $(TARGET)
+all: $(TARGET)
 
-$(OBJPATH)/%.o: $(SRCDIR)/%.c
-	$(CC) -c $(CFLAGS) $< -o $@
-
-$(TARGET): $(OBJS)
-	$(CC) $(SHAREDOPT) -o $(TARGET) $(OBJS) $(LFLAGS) $(LIBS)
-
-clean:
-	$(RM) $(OBJS)
-
-distclean: clean
-	$(RM) $(TARGET)
-
-dirs:
-	@mkdir -p $(OBJPATH)
+include makefile.prg

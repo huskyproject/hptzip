@@ -1,5 +1,6 @@
 PLATFORM=lnx
 LIBPREFIX=lib
-LIBSUFFIX=.so
+SHLIBSUFFIX=.so
+STLIBSUFFIX=.a
 SHAREDOPT= -shared -Wl,-soname,
 STATICOPT= -static
