@@ -1,0 +1,98 @@
+2003-08-16 Saturday 12:17  d_sergienko
+
+	* Makefile (1.1), make/makefile (1.5): added for ChangeLog
+	autogeneration
+
+2003-07-17 Thursday 11:57  mche
+
+	* src/hptzip.c (1.5): debug messages removed
+
+2003-06-20 Friday 13:55  nssoft
+
+	* make/osdep.inc (1.4): Add missed endif
+
+2003-06-19 Thursday 14:56  lmike
+
+	* make/: osdep.inc (1.3), osdefs/qnx (1.1): Added QNX support.
+
+2003-06-16 Monday 21:03  d_sergienko
+
+	* make/: makefile (1.4), makefile.prg (1.2): new makefiles
+	structure.
+
+2003-05-30 Friday 04:36  d_sergienko
+
+	* make/osdefs/bsd (1.4): fix platform name
+
+2003-05-29 Thursday 20:04  d_sergienko
+
+	* make/: makefile (1.3), makefile.inc (1.1), makefile.prg (1.1),
+	osdefs/bsd (1.3), osdefs/emx (1.2), osdefs/generic (1.2),
+	osdefs/lnx (1.2): new makefiles (test)
+
+2003-05-29 Thursday 17:34  d_sergienko
+
+	* make/makefile.mvcdll (1.1): added makefile for msvc (thanks to
+	Dmitry Pankov)
+
+2003-05-28 Wednesday 08:21  nssoft
+
+	* make/makefile (1.2): fix compilation
+
+2003-05-28 Wednesday 08:20  nssoft
+
+	* make/osdep.inc (1.2): add missed "else".
+
+2003-05-14 Wednesday 15:27  nssoft
+
+	* make/osdefs/bsd (1.2): Fix platform name
+
+2003-04-25 Friday 23:21  d_sergienko
+
+	* .cvs2cl (1.1), make/makefile (1.1), make/osdep.inc (1.1),
+	make/osdefs/be (1.1), make/osdefs/bsd (1.1), make/osdefs/cyg (1.1),
+	make/osdefs/djg (1.1), make/osdefs/emx (1.1), make/osdefs/generic
+	(1.1), make/osdefs/lnx (1.1): New experimental makefile model based
+	on GNU Make. only linux is working now.
+
+2003-04-23 Wednesday 17:15  mche
+
+	* src/hptzip.c (1.4): fix unpack
+
+2003-04-23 Wednesday 06:53  mche
+
+	* src/hptzip.c (1.3): fix pack
+
+2003-04-21 Monday 09:19  pgul
+
+	* hptzip/crypt.h (1.2), hptzip/hptzip.h (1.2), hptzip/ioapi.h
+	(1.2), hptzip/iowin32.h (1.2), hptzip/unzip.h (1.2), hptzip/zconf.h
+	(1.2), hptzip/zip.h (1.2), hptzip/zlib.h (1.2),
+	make/hptzipDll.vcproj (1.2), src/hptzip.c (1.2), src/ioapi.c (1.2),
+	src/iowin32.c (1.2), src/unzip.c (1.2), src/zip.c (1.2): dos2unix
+
+2003-04-21 Monday 09:17  pgul
+
+	* readme.txt (1.3): translate russian to english
+
+2003-04-21 Monday 08:12  mche
+
+	* hptzip/crypt.h (1.1), hptzip/hptzip.h (1.1), hptzip/ioapi.h
+	(1.1), hptzip/iowin32.h (1.1), hptzip/unzip.h (1.1), hptzip/zconf.h
+	(1.1), hptzip/zip.h (1.1), hptzip/zlib.h (1.1), hpt_patch_desc.txt
+	(1.2), hpt_zipInternalsupp.txt (1.2), hptzip.cpp (1.2), hptzip.h
+	(1.2), makefile.mvcdll (1.2), readme.txt (1.2), src/hptzip.c (1.1),
+	src/ioapi.c (1.1), make/hptzipDll.vcproj (1.1), src/iowin32.c
+	(1.1), src/unzip.c (1.1), src/zip.c (1.1): hptzip - library for
+	compress and decompress files using zlib
+
+2002-08-25 Sunday 13:52  mche
+
+	* hpt_patch_desc.txt (1.1), hpt_zipInternalsupp.txt (1.1),
+	readme.txt (1.1): no message
+
+2002-08-25 Sunday 08:33  mche
+
+	* hptzip.cpp (1.1), hptzip.h (1.1), makefile.mvcdll (1.1): Initial
+	revision
+
