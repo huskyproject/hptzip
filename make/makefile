@@ -8,32 +8,27 @@
 include ../../huskymak.cfg
 include makefile.inc
 
-TOP=../..
-
-LIBNAME=hptzip
+MODULENAME=hptzip
 VER_MAJOR=0
 VER_MINOR=1
 VER_RELEASE=0
 
-LIBS+=husky z
+CFLAGS+=
+LFLAGS+=
 
-LINKLIBS=$(addprefix -l,$(LIBS))
-LIBPATHS=$(addprefix -L,$(LIBDIR))
-
-CFLAGS+= -I$(INCDIR) -I../hptzip
-LFLAGS+= $(LIBPATHS) $(LINKLIBS)
-
-SRCDIR=../src
-SRCS=hptzip.c zip.c unzip.c
+SRCS_libhptzip=hptzip.c zip.c unzip.c
 ifeq ($(PLATFORM),win32)
-   SRCS+= iowin32.c
+   SRCS_libhptzip+= iowin32.c
 else
-  SRCS+= ioapi.c
+   SRCS_libhptzip+= ioapi.c
 endif
+OBJS_libhptzip=$(call src2obj, $(SRCS_libhptzip))
+LIBS_libhptzip=z husky
+CFLAGS_libhptzip=
+LFLAGS_libhptzip=
 
-#BINARIES=test
 LIBRARIES=hptzip
-#OBJS_test=$(call src2obj, $(SRCS) test.c)
-OBJS_libhptzip=$(call src2obj, $(SRCS))
+BINARIES=
+HEADERS=
 
 include makefile.prg

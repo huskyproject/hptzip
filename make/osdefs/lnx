@@ -5,3 +5,5 @@ STLIBSUFFIX=.a
 SHAREDOPT= -shared -Wl,-soname,
 STATICOPT= -static
 RM=rm -f
+LN=ln -s
+MV=mv
