@@ -12,8 +12,16 @@ VER_MAJOR=0
 VER_MINOR=1
 VER_RELEASE=0
 
-CFLAGS+= -I../hptzip -I$(INCDIR)
-LFLAGS+= -L../../build/$(PLATFORM)/lib -I$(LIBDIR)
+ifeq ($(DEBUG), 1)
+  CFLAGS = -I../hptzip -I$(INCDIR) $(DEBCFLAGS) $(WARNFLAGS)
+  LFLAGS = -L../../build/$(PLATFORM)/lib -I$(LIBDIR) $(DEBLFLAGS)
+else
+  CFLAGS = -I../hptzip -I$(INCDIR) $(OPTCFLAGS) $(WARNFLAGS)
+  LFLAGS = -L../../build/$(PLATFORM)/lib -I$(LIBDIR) $(OPTLFLAGS)
+endif
+# /vk was:
+#CFLAGS+= -I../hptzip -I$(INCDIR) $(OPTCFLAGS) $(WARNFLAGS)
+#LFLAGS+= -L../../build/$(PLATFORM)/lib -I$(LIBDIR)
 
 SRCS_libhptzip=hptzip.c zip.c unzip.c
 ifeq ($(PLATFORM),win32)
