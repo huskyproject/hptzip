@@ -1,3 +1,11 @@
+2003-09-29 Monday 08:12  val_khokhlov
+
+	* hptzip/hptzip.h (1.3), hptzip/hptzipdl.h (1.1), make/makefile.mvc
+	(1.1), make/makefile.mvcdll (1.2), src/hptzip.c (1.6), src/test.c
+	(1.1), src/unzip.c (1.3), src/zip.c (1.3): * win32 static library
+	makefile * win32 manual zlib.dll loading (for static library only,
+	set ZLIBDL=1)
+
 2003-09-19 Friday 18:27  d_sergienko
 
 	* make/makefile.prg (1.9): chandeg gmake -> $(MAKE). Thanx To Pavel
