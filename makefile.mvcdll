@@ -1,0 +1,33 @@
+# Microsoft Visual C++ Makefile
+# HPT internalZip support by Dmitriy Kazimirow
+# using CrystalSpace
+CSDIR=d:\CS
+CC=     cl
+CFLAGS= -nologo -MD -Zp1 -I.. -I"$(CSDIR)\include" -I"$(CSDIR)\include\csutil" -I"$(CSDIR)\include\cssys\win32"
+CDEFS=  -D__NT__ -DNT -DWINNT -D_CONSOLE -DUSE_STAT_MACROS -D_MAKE_DLL -DUSE_HPT_ZLIB -D_HPTZIP_EXT
+COPT=   -Ob2
+LINK=   link
+LINKOPTS = oldnames.lib msvcrt.lib Kernel32.lib "$(CSDIR)\libs\cssys\win32\libs\zlib.lib" "$(CSDIR)\mk\visualc\csrelease\bin\libs\libcssys.lib" "$(CSDIR)\mk\visualc\csrelease\bin\libs\libcsutil.lib" /nologo /opt:nowin98 /dll /nodefaultlib /out:"hptzipmvc.dll" /implib:"hptzipmvc.lib"
+
+HPTZIPL= hptzipmvc.dll
+
+OBJS=   hptzip.obj
+
+.c.obj:
+        $(CC) $(CFLAGS) $(CDEFS) $(COPT) -c $<
+
+.cpp.obj:
+        $(CC) $(CFLAGS) $(CDEFS) $(COPT) -c $<
+
+all: $(HPTZIPL) 
+
+$(HPTZIPL): $(OBJS)
+        $(LINK) $(LINKOPTS) $(OBJS)
+
+
+
+clean:
+        -del *.obj
+
+distclean: clean
+        -del *.lib
