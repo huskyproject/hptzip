@@ -4,7 +4,10 @@ BUILTLIBPATH=$(OBJPATH)/lib
 BUILTBINPATH=$(OBJPATH)/bin
 
 OBJPATH=$(TOP)/build/$(PLATFORM)
-OBJS=$(addprefix $(OBJPATH)/,$(SRCS:.c=$(OBJEXT)))
+
+define src2obj
+	$(addprefix $(OBJPATH)/,$(1:.c=$(OBJEXT)))
+endef
 
 mkshlib=$(BUILTLIBPATH)/$(LIBPREFIX)$(1)$(SHLIBSUFFIX)
 mksh3lib=$(BUILTLIBPATH)/$(LIBPREFIX)$(1)$(SHLIBSUFFIX).$(VER_MAJOR).$(VER_MINOR).$(VER_PATCH)

@@ -31,7 +31,9 @@ else
   SRCS+= ioapi.c
 endif
 
-TARGET=$(call mkshlib,$(LIBNAME)) $(call mkstlib,$(LIBNAME))
-all: dirs $(TARGET)
+#BINARIES=test
+LIBRARIES=hptzip
+#OBJS_test=$(call src2obj, $(SRCS) test.c)
+OBJS_libhptzip=$(call src2obj, $(SRCS))
 
 include makefile.prg
