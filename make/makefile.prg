@@ -1,7 +1,4 @@
-include makefile.inc
-
 .PRECIOUS : $(OBJPATH)/%$(OBJEXT)
-
 
 # public targets
 all: dirs build_binaries build_libraries rm_makefile_tgt

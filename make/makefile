@@ -5,6 +5,8 @@
 # $Id$
 #
 
+include makefile.inc
+
 MODULENAME=hptzip
 VER_MAJOR=0
 VER_MINOR=1
