@@ -1,4 +1,4 @@
-встроенный zip для hpt(zipInternal)
-использует zlib
-для win32 брать тут:
+built-in zip for hpt(zipInternal)
+Uses zlib
+For win32 download here:
 http://www.winimage.com/zLibDll/
