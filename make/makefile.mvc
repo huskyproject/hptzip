@@ -19,28 +19,24 @@ HPTZIPL   = hptzip.lib
 ZLIBDLL   = ..\zlib.lib
 !endif
 
-OBJS    = hptzip.obj\
-          ioapi.obj\
-          iowin32.obj\
-          unzip.obj\
-          zip.obj
+OBJS    = hptzip.obj ioapi.obj iowin32.obj unzip.obj zip.obj
 
 {..\src}.c.obj:
-        $(CC) $(CFLAGS) $(CINCL) $(CDEFS) $(COPT) -c $<
+	@$(CC) $(CFLAGS) $(CINCL) $(CDEFS) $(COPT) -c $<
 
 all: $(HPTZIPL) test
 
 $(HPTZIPL): $(OBJS)
-        lib /out:$(HPTZIPL) $(OBJS) $(ZLIBDLL)
+	@lib /out:$(HPTZIPL) $(OBJS) $(ZLIBDLL)
 
 test: test.obj
-        $(CC) test.obj $(HPTZIPL)
+	@$(CC) test.obj $(HPTZIPL)
 
 clean:
-        -del *.obj
-        -del *.lib
+	-del *.obj
+	-del *.lib
 
 distclean: clean
-        -del *.exe
-        -del *.exp
-        -del *.dll
+	-del *.exe
+	-del *.exp
+	-del *.dll
