@@ -1,3 +1,8 @@
+2004-01-21 Wednesday 03:59  andr_lukyanov
+
+	* make/: makefile.mvc (1.2), makefile.mvcdll (1.4): Fix MSVC
+	compilation
+
 2004-01-11 Sunday 15:12  mche
 
 	* src/hptzip.c (1.7): fix MSVC7 compilations and some warnings
