@@ -12,7 +12,7 @@ HPTZIPDLL = hptzip.dll
 ZLIBDLL   = ..\zlib.lib
 
 LIBS	= $(ZLIBDLL) USER32.LIB msvcrt.lib Kernel32.lib /opt:nowin98 \
-	  /dll /out:$(HPTZIPDLL) /implib:$(HPTZIPL)
+	  /dll /out:$(HPTZIPDLL) /nodefaultlib /implib:$(HPTZIPL)
 
 OBJS    = hptzip.obj\
 	  ioapi.obj\
