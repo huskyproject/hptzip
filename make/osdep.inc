@@ -15,6 +15,7 @@ ifeq ($(OSTYPE),beos) # BeOS build
 else
 ifeq ($(shell uname),Linux)
   include $(OSDEFS)lnx
+else
 ifeq ($(shell uname),FreeBSD)
   include $(OSDEFS)bsd
 endif  
