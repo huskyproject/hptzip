@@ -40,7 +40,7 @@ $(OBJPATH)/%.o: $(SRCDIR)/%.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
 $(TARGET): $(OBJS)
-	$(CC) $(SHAREDOPT)$(TARGET) -o $(TARGET) $(OBJS) $(LFLAGS) $(LIBS)
+	$(CC) $(SHAREDOPT) -o $(TARGET) $(OBJS) $(LFLAGS) $(LIBS)
 
 clean:
 	$(RM) $(OBJS)
