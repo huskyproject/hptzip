@@ -4,3 +4,4 @@ SHLIBSUFFIX=.so
 STLIBSUFFIX=.a
 SHAREDOPT= -shared -Wl,-soname,
 STATICOPT= -static
+RM=rm -f
