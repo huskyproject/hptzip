@@ -21,7 +21,7 @@ getobjs=$(OBJS_$(1)) $(call src2obj,$(SRCS_$(1)))
 
 define build_bin
    		@echo -ne "$(1): $(OBJS_$(notdir $(1)))\n\t\t@$(CC) -o $(1) $(LFLAGS) $(OBJS_$(notdir $(1)))" > makefile.tgt
-   		@make $(1)
+   		@gmake $(1)
 endef
 
 define build_lib_static
@@ -29,7 +29,7 @@ define build_lib_static
 		@echo -e "\t\t@echo -ne \"archiving $(notdir $(call mkstlib,$(1))) ... \"" >> makefile.tgt
 		@echo -e "\t\t@$(AR) $(AR_R) $(call mkstlib,$(1)) $(OBJS_lib$(basename $(notdir $(1))))" >> makefile.tgt
 		@echo -e "\t\t@echo \"done\"" >> makefile.tgt
-		@make $(call mkstlib,$(1))
+		@gmake $(call mkstlib,$(1))
 endef
 
 define build_lib_shared
@@ -37,7 +37,7 @@ define build_lib_shared
 		@echo -e "\t\t@echo -ne \"linking $(notdir $(call mkshlib,$(1))) ... \"" >> makefile.tgt
 		@echo -e "\t\t@$(CC) $(SHAREDOPT)$(notdir $(call mksh2lib,$(1))) -o $(call mkshlib,$(1)) $(OBJS_lib$(basename $(notdir $(1))))" >> makefile.tgt
 		@echo -e "\t\t@echo \"done\"" >> makefile.tgt
-		@make $(call mkshlib,$(1))
+		@gmake $(call mkshlib,$(1))
 endef
 
 define install_lib
