@@ -1,13 +1,20 @@
-.PHONY: dirs all clean distclean
-
-$(OBJPATH)/%$(OBJEXT): $(SRCDIR)/%.c dirs
-	$(CC) -c $(CFLAGS) $< -o $@
+.PRECIOUS : $(OBJPATH)/%$(OBJEXT)
+ 
+$(OBJPATH)/%$(OBJEXT): $(SRCDIR)/%.c
+	@echo -n "building $(@F) ... "
+	@$(CC) -c $(CFLAGS) $< -o $@
+	@echo done
 
 $(OBJPATH)/%$(SHLIBSUFFIX): $(OBJS)
-	$(CC) $(SHAREDOPT)$@ -o $@ $(OBJS) $(LFLAGS)
+	@echo -n "linking $(@F) ... "
+	@$(CC) $(SHAREDOPT)$(@F) $? $(LFLAGS) -o $@
+	@echo done
 
 $(OBJPATH)/%$(STLIBSUFFIX): $(OBJS)
-	$(AR) $(AR_R) $@ $(OBJS)
+	@echo -n "archiving $(@F) ... "
+	@$(AR) $(AR_R) $@ $(OBJS)
+	@echo done
+
 
 dirs:
 	@$(MKDIR) -p $(OBJPATH)

@@ -30,8 +30,7 @@ else
   SRCS=hptzip.c zip.c unzip.c ioapi.c
 endif
 
-TARGET=$(call mkshlib,$(LIBNAME))
-
-all: $(TARGET)
+TARGET=$(call mkshlib,$(LIBNAME)) $(call mkstlib,$(LIBNAME))
+all: dirs $(TARGET)
 
 include makefile.prg
