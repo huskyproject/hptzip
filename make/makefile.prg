@@ -10,6 +10,7 @@ install: install_libraries install-h
 BUILTLIBPATH=$(OBJPATH)/lib
 BUILTBINPATH=$(OBJPATH)/bin
 OBJPATH=$(TOP)/build/$(PLATFORM)
+INSTALL_HEADERS=$(addprefix $(INCDIR)$(DIRSEP)$(_H_DIR)$(DIRSEP),$(HEADERS))
 
 mkshlib=$(BUILTLIBPATH)/$(LIBPREFIX)$(1)$(SHLIBSUFFIX)
 mksh3lib=$(BUILTLIBPATH)/$(LIBPREFIX)$(1)$(SHLIBSUFFIX).$(VER_MAJOR).$(VER_MINOR).$(VER_RELEASE)
@@ -41,10 +42,16 @@ define build_lib_shared
 endef
 
 define install_lib
-		$(MV) $(call mkshlib,$(1)) $(call mksh3lib,$(1))
+		-$(MV) $(call mkshlib,$(1)) $(call mksh3lib,$(1))
+		$(INSTALL) $(call mksh3lib,$(1)) $(LIBDIR)/$(notdir $(call mksh3lib,$(1)))
+		
 		$(LN) $(notdir $(call mksh3lib,$(1))) $(call mksh2lib,$(1))
 		$(LN) $(notdir $(call mksh3lib,$(1))) $(call mksh1lib,$(1))
 		$(LN) $(notdir $(call mksh3lib,$(1))) $(call mkshlib,$(1))
+		
+		$(LN) $(notdir $(call mksh3lib,$(1))) $(LIBDIR)/$(notdir $(call mksh2lib,$(1)))
+		$(LN) $(notdir $(call mksh3lib,$(1))) $(LIBDIR)/$(notdir $(call mksh1lib,$(1)))
+		$(LN) $(notdir $(call mksh3lib,$(1))) $(LIBDIR)/$(notdir $(call mkshlib,$(1)))
 endef
 
 # targets
@@ -89,10 +96,10 @@ FORCE:
 install-h-dir: FORCE
 	-$(MKDIR) $(MKDIROPT) $(INCDIR)$(DIRSEP)$(_H_DIR)
 
-%.h: FORCE
-	-$(INSTALL) $(IIOPT) $(_H_DIR)$@ $(INCDIR)$(DIRSEP)$(_H_DIR)
+$(INCDIR)$(DIRSEP)$(_H_DIR)/%.h: FORCE
+	-$(INSTALL) $(IIOPT) $(TOP)/$(MODULENAME)/$(_H_DIR)/$(notdir $@) $@
 
-install-h: install-h-dir $(HEADERS)
+install-h: install-h-dir $(INSTALL_HEADERS)
 
 makefile.tgt:
 		@echo -n > makefile.tgt

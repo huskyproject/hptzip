@@ -28,6 +28,6 @@ LFLAGS_libhptzip=
 
 LIBRARIES=hptzip
 BINARIES=
-HEADERS=
+HEADERS=hptzip.h
 
 include makefile.prg
