@@ -1,3 +1,8 @@
+2003-10-06 Monday 08:31  val_khokhlov
+
+	* src/: unzip.c (1.4), zip.c (1.4): turn off optimization (in order
+	to work correctly with different zlib.dll's)
+
 2003-10-04 Saturday 20:06  d_sergienko
 
 	* make/huskymak.cfg (1.1): new variant of huskymak.cfg. will be
