@@ -2,11 +2,12 @@ include makefile.inc
 
 .PRECIOUS : $(OBJPATH)/%$(OBJEXT)
 
--include makefile.tgt
 
 # public targets
 all: dirs build_binaries build_libraries rm_makefile_tgt
 install: install_libraries install-h
+
+-include makefile.tgt
 
 # macroses
 BUILTLIBPATH=$(OBJPATH)/lib
@@ -27,19 +28,19 @@ define build_bin
 endef
 
 define build_lib_static
-   		echo -e "$(call mkstlib,$(1)): $(call getobjs,lib$(1))" > makefile.tgt
-		echo -e "\t\t@echo -ne \"archiving $(notdir $(call mkstlib,$(1))) ... \"" >> makefile.tgt
-		echo -e "\t\t@$(AR) $(AR_R) $(call mkstlib,$(1)) $(OBJS_lib$(basename $(notdir $(1))))" >> makefile.tgt
-		echo -e "\t\t@echo \"done\"" >> makefile.tgt
-		make $(call mkstlib,$(1))
+   		@echo -e "$(call mkstlib,$(1)): $(call getobjs,lib$(1))" > makefile.tgt
+		@echo -e "\t\t@echo -ne \"archiving $(notdir $(call mkstlib,$(1))) ... \"" >> makefile.tgt
+		@echo -e "\t\t@$(AR) $(AR_R) $(call mkstlib,$(1)) $(OBJS_lib$(basename $(notdir $(1))))" >> makefile.tgt
+		@echo -e "\t\t@echo \"done\"" >> makefile.tgt
+		@make $(call mkstlib,$(1))
 endef
 
 define build_lib_shared
-   		echo -e "$(call mkshlib,$(1)): $(OBJS_lib$(basename $(notdir $(1))))" > makefile.tgt
-		echo -e "\t\t@echo -ne \"linking $(notdir $(call mkshlib,$(1))) ... \"" >> makefile.tgt
-		echo -e "\t\t@$(CC) $(SHAREDOPT)$(call mkshlib,$(1)) -o $(call mkshlib,$(1)) $(OBJS_lib$(basename $(notdir $(1))))" >> makefile.tgt
-		echo -e "\t\t@echo \"done\"" >> makefile.tgt
-		make $(call mkshlib,$(1))
+   		@echo -e "$(call mkshlib,$(1)): $(OBJS_lib$(basename $(notdir $(1))))" > makefile.tgt
+		@echo -e "\t\t@echo -ne \"linking $(notdir $(call mkshlib,$(1))) ... \"" >> makefile.tgt
+		@echo -e "\t\t@$(CC) $(SHAREDOPT)$(notdir $(call mksh2lib,$(1))) -o $(call mkshlib,$(1)) $(OBJS_lib$(basename $(notdir $(1))))" >> makefile.tgt
+		@echo -e "\t\t@echo \"done\"" >> makefile.tgt
+		@make $(call mkshlib,$(1))
 endef
 
 define install_lib
@@ -67,9 +68,9 @@ install_libraries: build_libraries
 		
 		
 $(OBJPATH)/%$(OBJEXT): $(SRCDIR)/%.c
-	echo -n "compiling $(@F) ... "
-	$(CC) -c $(CFLAGS) $< -o $@
-	echo done
+	@echo -n "compiling $(@F) ... "
+	@$(CC) -c $(CFLAGS) $< -o $@
+	@echo done
 
 dirs:
 	@$(MKDIR) -p $(OBJPATH)
