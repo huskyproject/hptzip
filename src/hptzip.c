@@ -40,6 +40,7 @@
 #define MAXFILENAME (256)
 
 char destdir[MAXFILENAME];
+size_t dsLen;
 
 
 
@@ -271,12 +272,15 @@ int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
         int skip=0;
 
         if ((*popt_extract_without_path)==0)
-            write_filename = filename_inzip;
+        {
+            destdir[dsLen] = '\0';
+            strcat(destdir,filename_withoutpath);
+            write_filename = destdir;
+        }
         else
-            write_filename = filename_withoutpath;
-        
-        strcat(destdir,write_filename);
-        write_filename = destdir;
+        {
+            write_filename = filename_inzip;
+        }
 
         err = unzOpenCurrentFilePassword(uf,password);
         if (err!=UNZ_OK)
@@ -440,6 +444,7 @@ int do_extract_onefile(uf,filename,opt_extract_without_path,opt_overwrite,passwo
 int UnPackWithZlib(char * zipfilename, char * filename_to_extract, char * dest_dir)
 {
     unzFile uf=NULL;
+    int nRet  = 0;
 
     if (zipfilename!=NULL)
     {
@@ -465,18 +470,16 @@ int UnPackWithZlib(char * zipfilename, char * filename_to_extract, char * dest_d
     printf("%s opened\n",zipfilename);
 
     strcpy(destdir,dest_dir);
+    dsLen = strlen( dest_dir );
 
     if (filename_to_extract == NULL)
-    
-        return do_extract(uf,1,1,NULL);
-    
+        nRet = do_extract(uf,1,1,NULL);
     else
-
-        return do_extract_onefile(uf,filename_to_extract,1,1,NULL);
+        nRet = do_extract_onefile(uf,filename_to_extract,1,1,NULL);
 
     unzCloseCurrentFile(uf);
-
-    return 0;
+    unzClose(uf);
+    return nRet;
 }
 
 int PackWithZlib(char * zipfilenamearg, char * filenameinzip)
@@ -538,7 +541,8 @@ int PackWithZlib(char * zipfilenamearg, char * filenameinzip)
 
             if ((password != NULL) && (err==ZIP_OK))
                 err = getFileCrc(filenameinzip,buf,size_buf,&crcFile);
-
+            
+            basename++; /* skip pathdelim */
             err = zipOpenNewFileInZip3(zf,basename,&zi,
                 NULL,0,NULL,0,NULL /* comment*/,
                 (opt_compress_level != 0) ? Z_DEFLATED : 0,
