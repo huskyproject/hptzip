@@ -1,5 +1,7 @@
 /* zip.c -- IO on .zip files using zlib
-   Version 0.21, March 10th, 2003
+   Version 1.01, May 8th, 2004
+
+   Copyright (C) 1998-2004 Gilles Vollant
 
    Read zip.h for more info
 */
@@ -9,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "zlib.h"
 #include "zip.h"
 
 #ifdef STDC
@@ -80,7 +83,7 @@
 #endif
 #endif
 const char zip_copyright[] =
-   " zip 0.21 Copyright 1998-2003 Gilles Vollant - http://www.winimage.com/zLibDll";
+   " zip 1.01 Copyright 1998-2004 Gilles Vollant - http://www.winimage.com/zLibDll";
 
 
 #define SIZEDATA_INDATABLOCK (4096-(4*4))
@@ -128,7 +131,7 @@ typedef struct
     uLong dosDate;
     uLong crc32;
     int  encrypt;
-#ifndef NOCRPYT
+#ifndef NOCRYPT
     unsigned long keys[3];     /* keys defining the pseudo-random sequence */
     const unsigned long* pcrc_32_tab;
     int crypt_header_size;
@@ -150,7 +153,7 @@ typedef struct
 
 
 
-#ifndef NOCRPYT
+#ifndef NOCRYPT
 #define INCLUDECRYPTINGCODE_IFCRYPTALLOWED
 #include "crypt.h"
 #endif
@@ -268,10 +271,19 @@ local int ziplocal_putValue (pzlib_filefunc_def, filestream, x, nbByte)
 {
     unsigned char buf[4];
     int n;
-    for (n = 0; n < nbByte; n++) {
+    for (n = 0; n < nbByte; n++)
+    {
         buf[n] = (unsigned char)(x & 0xff);
         x >>= 8;
     }
+    if (x != 0)
+      {     /* data overflow - hack for ZIP64 (X Roche) */
+      for (n = 0; n < nbByte; n++)
+        {
+          buf[n] = 0xff;
+        }
+      }
+
     if (ZWRITE(*pzlib_filefunc_def,filestream,buf,nbByte)!=(uLong)nbByte)
         return ZIP_ERRNO;
     else
@@ -290,7 +302,16 @@ local void ziplocal_putValue_inmemory (dest, x, nbByte)
         buf[n] = (unsigned char)(x & 0xff);
         x >>= 8;
     }
+
+    if (x != 0)
+    {     /* data overflow - hack for ZIP64 */
+       for (n = 0; n < nbByte; n++)
+       {
+          buf[n] = 0xff;
+       }
+    }
 }
+
 /****************************************************************************/
 
 
@@ -516,7 +537,7 @@ extern zipFile ZEXPORT zipOpen2 (pathname, append, globalcomment, pzlib_filefunc
     }
 
     /* now we add file in a zipfile */
-    #ifndef NO_ADDFILEINEXISTINGZIP
+#    ifndef NO_ADDFILEINEXISTINGZIP
     if (append == APPEND_STATUS_ADDINZIP)
     {
         uLong byte_before_the_zipfile;/* byte before the zipfile, (>0 for sfx)*/
@@ -626,7 +647,7 @@ extern zipFile ZEXPORT zipOpen2 (pathname, append, globalcomment, pzlib_filefunc
                   offset_central_dir+byte_before_the_zipfile,ZLIB_FILEFUNC_SEEK_SET)!=0)
             err=ZIP_ERRNO;
     }
-    #endif /* !NO_ADDFILEINEXISTINGZIP*/
+#    endif /* !NO_ADDFILEINEXISTINGZIP*/
 
     if (err != ZIP_OK)
     {
@@ -676,10 +697,10 @@ extern int ZEXPORT zipOpenNewFileInZip3 (file, filename, zipfi,
     uInt i;
     int err = ZIP_OK;
 
-    #ifdef NOCRPYT
+#    ifdef NOCRYPT
     if (password != NULL)
         return ZIP_PARAMERROR;
-    #endif
+#    endif
 
     if (file == NULL)
         return ZIP_PARAMERROR;
@@ -702,9 +723,9 @@ extern int ZEXPORT zipOpenNewFileInZip3 (file, filename, zipfi,
     if (comment==NULL)
         size_comment = 0;
     else
-        size_comment = strlen(comment);
+        size_comment = (uInt)strlen(comment);
 
-    size_filename = strlen(filename);
+    size_filename = (uInt)strlen(filename);
 
     if (zipfi == NULL)
         zi->ci.dosDate = 0;
@@ -832,26 +853,24 @@ extern int ZEXPORT zipOpenNewFileInZip3 (file, filename, zipfi,
 
         if (err==Z_OK)
             zi->ci.stream_initialised = 1;
-
-        #ifndef NOCRPYT
-        zi->ci.crypt_header_size = 0;
-        if ((err==Z_OK) && (password != NULL))
-        {
-            unsigned char bufHead[RAND_HEAD_LEN];
-            unsigned int sizeHead;
-            zi->ci.encrypt = 1;
-            zi->ci.pcrc_32_tab = get_crc_table();
-            /*init_keys(password,zi->ci.keys,zi->ci.pcrc_32_tab);*/
-
-            sizeHead=crypthead(password,bufHead,RAND_HEAD_LEN,zi->ci.keys,zi->ci.pcrc_32_tab,crcForCrypting);
-            zi->ci.crypt_header_size = sizeHead;
-
-            if (ZWRITE(zi->z_filefunc,zi->filestream,bufHead,sizeHead) != sizeHead)
-                    err = ZIP_ERRNO;
-        }
-        #endif
     }
+#    ifndef NOCRYPT
+    zi->ci.crypt_header_size = 0;
+    if ((err==Z_OK) && (password != NULL))
+    {
+        unsigned char bufHead[RAND_HEAD_LEN];
+        unsigned int sizeHead;
+        zi->ci.encrypt = 1;
+        zi->ci.pcrc_32_tab = get_crc_table();
+        /*init_keys(password,zi->ci.keys,zi->ci.pcrc_32_tab);*/
 
+        sizeHead=crypthead(password,bufHead,RAND_HEAD_LEN,zi->ci.keys,zi->ci.pcrc_32_tab,crcForCrypting);
+        zi->ci.crypt_header_size = sizeHead;
+
+        if (ZWRITE(zi->z_filefunc,zi->filestream,bufHead,sizeHead) != sizeHead)
+                err = ZIP_ERRNO;
+    }
+#    endif
 
     if (err==Z_OK)
         zi->in_opened_file_inzip = 1;
@@ -910,11 +929,13 @@ local int zipFlushWriteBuffer(zi)
 
     if (zi->ci.encrypt != 0)
     {
+#ifndef NOCRYPT
         uInt i;
         int t;
         for (i=0;i<zi->ci.pos_in_buffered_data;i++)
             zi->ci.buffered_data[i] = zencode(zi->ci.keys, zi->ci.pcrc_32_tab,
                                        zi->ci.buffered_data[i],t);
+#endif
     }
     if (ZWRITE(zi->z_filefunc,zi->filestream,zi->ci.buffered_data,zi->ci.pos_in_buffered_data)
                                                                     !=zi->ci.pos_in_buffered_data)
@@ -1040,9 +1061,9 @@ extern int ZEXPORT zipCloseFileInZipRaw (file, uncompressed_size, crc32)
         uncompressed_size = (uLong)zi->ci.stream.total_in;
     }
     compressed_size = (uLong)zi->ci.stream.total_out;
-    #ifndef NOCRPYT
+#    ifndef NOCRYPT
     compressed_size += zi->ci.crypt_header_size;
-    #endif
+#    endif
 
     ziplocal_putValue_inmemory(zi->ci.central_header+16,crc32,4); /*crc*/
     ziplocal_putValue_inmemory(zi->ci.central_header+20,
@@ -1111,7 +1132,7 @@ extern int ZEXPORT zipClose (file, global_comment)
     if (global_comment==NULL)
         size_global_comment = 0;
     else
-        size_global_comment = strlen(global_comment);
+        size_global_comment = (uInt)strlen(global_comment);
 
 
     centraldir_pos_inzip = ZTELL(zi->z_filefunc,zi->filestream);
