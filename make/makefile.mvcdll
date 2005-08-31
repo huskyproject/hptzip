@@ -3,13 +3,13 @@
 CC=     cl
 CFLAGS= -nologo -MD -Zp1
 CINCL	= -I..\..\huskylib -I..\hptzip
-CDEFS=  -D__NT__ -DNT -D_CONSOLE -D_MAKE_DLL -DWIN32 -D_WINDOWS -D_DLL -DZLIB_DLL
+CDEFS=  -D__NT__ -DNT -D_CONSOLE -D_MAKE_DLL -DWIN32 -D_WINDOWS -D_DLL -DZLIB_DLL -DZLIB_WINAPI
 COPT=   -O2
 LINK=   link -nologo
 
 HPTZIPL   = hptzip.lib
 HPTZIPDLL = hptzip.dll
-ZLIBDLL   = ..\zlib.lib
+ZLIBDLL   = ..\zlibwapi.lib
 
 LIBS	= $(ZLIBDLL) USER32.LIB msvcrt.lib Kernel32.lib /opt:nowin98 \
 	  /dll /out:$(HPTZIPDLL) /nodefaultlib /implib:$(HPTZIPL)
