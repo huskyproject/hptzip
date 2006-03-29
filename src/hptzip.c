@@ -536,8 +536,8 @@ int PackWithZlib(char * zipfilenamearg, char * filenameinzip)
             printf("error opening %s\n",zipfilenamearg);
             err= ZIP_ERRNO;
         }
-/*
         else
+/*
             printf("creating %s\n",zipfilenamearg);
 */
         {
@@ -620,7 +620,7 @@ int PackWithZlib(char * zipfilenamearg, char * filenameinzip)
     }
 
     free(buf);
-    return 0;
+    return err;
 }
 
 /* initialize zlib */
