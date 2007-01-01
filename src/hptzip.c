@@ -61,10 +61,9 @@ size_t dsLen;
     filename : the filename of the file where date/time must be modified
     dosdate : the new date at the MSDos format (4 bytes)
     tmu_date : the SAME new date at the tm_unz format */
-void change_file_date(filename,dosdate,tmu_date)
-    const char *filename;
-    uLong dosdate;
-    tm_unz tmu_date;
+void change_file_date(const char *filename,
+                      uLong dosdate,
+                      tm_unz tmu_date)
 {
 #ifdef WIN32
   HANDLE hFile;
@@ -99,10 +98,9 @@ void change_file_date(filename,dosdate,tmu_date)
 }
 
 #ifdef WIN32
-uLong filetime(f, tmzip, dt)
-    char *f;                /* name of file to get info on */
-    tm_zip *tmzip;             /* return value: access, modific. and creation times */
-    uLong *dt;             /* dostime */
+uLong filetime(char *f,         /* name of file to get info on */
+               tm_zip *tmzip,   /* return value: access, modific. and creation times */
+               uLong *dt)       /* dostime */
 {
   int ret = 0;
   {
@@ -176,8 +174,7 @@ uLong filetime(f, tmzip, dt)
 
 
 
-int check_exist_file(filename)
-    const char* filename;
+int check_exist_file(const char* filename)
 {
     FILE* ftestexist;
     int ret = 1;
@@ -231,11 +228,10 @@ int getFileCrc(const char* filenameinzip,void*buf,unsigned long size_buf,unsigne
 
 
 
-int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
-    unzFile uf;
-    const int* popt_extract_without_path;
-    int* popt_overwrite;
-    const char* password;
+int do_extract_currentfile(unzFile uf,
+                           const int* popt_extract_without_path,
+                           int* popt_overwrite,
+                           const char* password)
 {
     char filename_inzip[MAXFILENAME];
     char* filename_withoutpath;
@@ -395,11 +391,10 @@ int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
 }
 
 
-int do_extract(uf,opt_extract_without_path,opt_overwrite,password)
-    unzFile uf;
-    int opt_extract_without_path;
-    int opt_overwrite;
-    const char* password;
+int do_extract(unzFile uf,
+               int opt_extract_without_path,
+               int opt_overwrite,
+               const char* password)
 {
     uLong i;
     unz_global_info gi;
@@ -431,12 +426,11 @@ int do_extract(uf,opt_extract_without_path,opt_overwrite,password)
     return 0;
 }
 
-int do_extract_onefile(uf,filename,opt_extract_without_path,opt_overwrite,password)
-    unzFile uf;
-    const char* filename;
-    int opt_extract_without_path;
-    int opt_overwrite;
-    const char* password;
+int do_extract_onefile(unzFile uf,
+                       const char* filename,
+                       int opt_extract_without_path,
+                       int opt_overwrite,
+                       const char* password)
 {
     int err = UNZ_OK;
     if (unzLocateFile(uf,filename,CASESENSITIVITY)!=UNZ_OK)
