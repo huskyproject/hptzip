@@ -313,6 +313,9 @@ local uLong ziplocal_TmzDateToDosDate(const tm_zip* ptm,
                                       uLong dosDate)
 {
     uLong year = (uLong)ptm->tm_year;
+
+    unused(dosDate);
+
     if (year>1980)
         year-=1980;
     else if (year>80)
@@ -493,8 +496,9 @@ extern zipFile ZEXPORT zipOpen2 (const char *pathname,
     zip_internal ziinit;
     zip_internal* zi;
     int err=ZIP_OK;
-
-
+  
+    unused(globalcomment);
+  
     if (pzlib_filefunc_def==NULL)
         fill_fopen_filefunc(&ziinit.z_filefunc);
     else

@@ -69,6 +69,8 @@ void change_file_date(const char *filename,
   HANDLE hFile;
   FILETIME ftm,ftLocal,ftCreate,ftLastAcc,ftLastWrite;
 
+  unused(tmu_date);
+
   hFile = CreateFile(filename,GENERIC_READ | GENERIC_WRITE,
                       0,NULL,OPEN_EXISTING,0,NULL);
   GetFileTime(hFile,&ftCreate,&ftLastAcc,&ftLastWrite);
@@ -103,6 +105,9 @@ uLong filetime(char *f,         /* name of file to get info on */
                uLong *dt)       /* dostime */
 {
   int ret = 0;
+
+  unused(tmzip);
+
   {
       FILETIME ftLocal;
       HANDLE hFind;

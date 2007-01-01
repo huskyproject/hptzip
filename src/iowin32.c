@@ -70,7 +70,9 @@ voidpf ZCALLBACK win32_open_file_func (voidpf opaque,
     DWORD dwDesiredAccess,dwCreationDisposition,dwShareMode,dwFlagsAndAttributes ;
     HANDLE hFile = 0;
     voidpf ret=NULL;
-
+    
+    unused(opaque);
+    
     dwDesiredAccess = dwShareMode = dwFlagsAndAttributes = 0;
 
     if ((mode & ZLIB_FILEFUNC_MODE_READWRITEFILTER)==ZLIB_FILEFUNC_MODE_READ)
@@ -120,6 +122,9 @@ uLong ZCALLBACK win32_read_file_func (voidpf opaque,
 {
     uLong ret=0;
     HANDLE hFile = NULL;
+    
+    unused(opaque);
+    
     if (stream!=NULL)
         hFile = ((WIN32FILE_IOWIN*)stream) -> hf;
     if (hFile != NULL)
@@ -142,6 +147,9 @@ uLong ZCALLBACK win32_write_file_func (voidpf opaque,
 {
     uLong ret=0;
     HANDLE hFile = NULL;
+    
+    unused(opaque);
+    
     if (stream!=NULL)
         hFile = ((WIN32FILE_IOWIN*)stream) -> hf;
 
@@ -162,6 +170,9 @@ long ZCALLBACK win32_tell_file_func (voidpf opaque,
 {
     long ret=-1;
     HANDLE hFile = NULL;
+    
+    unused(opaque);
+    
     if (stream!=NULL)
         hFile = ((WIN32FILE_IOWIN*)stream) -> hf;
     if (hFile != NULL)
@@ -186,8 +197,10 @@ long ZCALLBACK win32_seek_file_func (voidpf opaque,
 {
     DWORD dwMoveMethod=0xFFFFFFFF;
     HANDLE hFile = NULL;
-
     long ret=-1;
+    
+    unused(opaque);
+    
     if (stream!=NULL)
         hFile = ((WIN32FILE_IOWIN*)stream) -> hf;
     switch (origin)
@@ -223,7 +236,9 @@ int ZCALLBACK win32_close_file_func (voidpf opaque,
                                      voidpf stream)
 {
     int ret=-1;
-
+    
+    unused(opaque);
+    
     if (stream!=NULL)
     {
         HANDLE hFile;
@@ -242,6 +257,9 @@ int ZCALLBACK win32_error_file_func (voidpf opaque,
                                      voidpf stream)
 {
     int ret=-1;
+    
+    unused(opaque);
+    
     if (stream!=NULL)
     {
         ret = ((WIN32FILE_IOWIN*)stream) -> error;
