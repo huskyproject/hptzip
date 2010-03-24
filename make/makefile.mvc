@@ -1,4 +1,36 @@
-# Microsoft Visual C++ Makefile for build hptzip static library
+# $Id$
+# 
+# Microsoft Visual C++ Makefile for build hptzip LIB or DLL
+
+
+## include common makefiles part ##
+!include ../../huskymak.cfg
+
+!if "$(OBJOUT)" != ""
+
+OBJOUT2=$(OBJOUT)hptzip/
+
+!if [if not exist $(OBJOUT2:/=\) $(MKDIR) $(OBJOUT2:/=\)] == 0
+OBJOUT =$(OBJOUT)hptzip/
+!endif
+
+!endif
+
+!include makefile.inc
+
+ZLIBH	= $(H_DIR)
+# or set it to directory with zlib sources
+#ZLIBH	= 
+
+!if $(DEBUG) == 1
+# You can set both to the same value if no debug version exist or if
+# no zlib debug needed.
+# ZLIBL can point to static library or import library for dll.
+# It is at your option and does not depend on DYNLIBS value.
+ZLIBL   = ..\zdlld.lib
+!else
+ZLIBL   = ..\zdll.lib
+!endif
 
 # set to 1 for manual loading that doesn't require zlib.dll to run hpt.exe
 ZLIBDL=0
@@ -7,36 +39,96 @@ ZLIBDL=0
 CDEFSDL = -DZLIBDL
 !endif
 
-CC=     cl
-CFLAGS= -nologo -Zp1
-CINCL   = -I..\..\huskylib -I..\hptzip
-CDEFS=  -D__NT__ -DNT -D_CONSOLE -DWIN32 -D_WINDOWS $(CDEFSDL) -D"NOUNCRPYT"
-COPT=   -O2
-LINK=   link -nologo
+IMPLIBNAME=$(LIBOUT)$(IMPLIBPREFIX)$(LIBNAME)$(DLLSUFFIX)
+DLLNAME=$(BINOUT)$(DLLPREFIX)$(LIBNAME)$(DLLSUFFIX)
+DLLIMPORTLIB=$(IMPLIBNAME)$(_LIB)
+PROGRAMSILK=$(PROGRAMS:.exe=.ilk)
+PROGRAMSPDB=$(PROGRAMS:.exe=.pdb)
 
-HPTZIPL   = hptzip.lib
-!if $(ZLIBDL) != 1
-ZLIBDLL   = ..\zlib.lib
+## program options ##
+
+## options for compiler ##
+
+CINCL	= -I$(ZLIBH) -I$(H_DIR) -I../../huskylib
+
+CFLAGS	= $(CFLAGS) $(CINCL) $(CDEFSDL) -D"NOUNCRPYT"
+
+## options for linker ##
+LFLAGS=$(LFLAGS) $(LINKPDBOPT)$(BINOUT)
+
+LDLLFLAGS=$(LDLLFLAGS) $(LINKNAMEOPT)$(TARGETDLL) \
+	  $(LINKPDBOPT)$(BINOUT) /implib:$(DLLIMPORTLIB)
+
+# libraries need to build binary file
+# for dynamic libraries:
+#DLLS	= $(LIBS)
+
+# for executables
+#LIBSL	= $(LIBS) 
+
+!if $(DYNLIBS)==1
+DLLS	= $(LIBS) $(ZLIBL)
+# Note: Executables depend only on hptzip.lib not zlib.lib
+# this is why LIBSL do not include DLLS as usual
+LIBSL	= $(LIBS) $(DLLIMPORTLIB)
+
+TARGETLIBNAME=$(TARGETDLL)
+!else
+LIBSL	= $(LIBS) $(ZLIBL)
+
+TARGETLIBNAME=$(TARGETLIB)
 !endif
 
-OBJS    = hptzip.obj ioapi.obj iowin32.obj unzip.obj zip.obj
+default:
+	@echo Set DYNLIBS=1 in huskymak.cfg to build dynamic version of library
+	@echo Run 'make lib' to build library ($(TARGETLIBNAME))
+	@echo Run 'make all' to build library ($(TARGETLIBNAME))
+	@echo _    and programs ($(PROGRAMS))
 
-{..\src}.c.obj:
-	@$(CC) $(CFLAGS) $(CINCL) $(CDEFS) $(COPT) -c $<
+lib: $(TARGETLIBNAME)
 
-all: $(HPTZIPL) test
+programs: $(PROGRAMS)
 
-$(HPTZIPL): $(OBJS)
-	@lib /out:$(HPTZIPL) $(OBJS) $(ZLIBDLL)
+all: lib programs
 
-test: test.obj
-	@$(CC) test.obj $(HPTZIPL)
+$(OBJS) $(PRGOBJS): $(HEADERS) makefile.mvc ../../huskymak.cfg makefile.inc
+
+{$(SRC_DIR)}$(_C){$(O)}$(_OBJ)::
+	@$(CC) $(CFLAGS) $(OBJOPT) $(OBJNAMEOPT)$(O) @<<
+$<
+<<
+
+$(TARGETLIB):	$(OBJS)
+	@echo Create $(TARGETLIB)...
+	@$(AR) $(ARFLAGS) $(LIBNAMEOPT)$@ @<<
+$**
+<<
+
+
+$(TARGETDLL):	$(OBJS)
+	@echo Create $(TARGETDLL)...
+	@$(LINK) $(LDLLFLAGS) $(DLLS) @<<
+$(OBJS)
+<<
+
+
+#$(PROGRAMS): $(O)$(@B)$(_OBJ)
+#	@echo Create $@...
+#	@$(LINK) $(LINKNAMEOPT)$@ $** $(LFLAGS) $(LIBSL)
 
 clean:
-	-del *.obj
-	-del *.lib
+	-$(RM) $(RMOPT) $(OBJS:/=\)
+	-$(RM) $(RMOPT) VC*$(_PDB)
+	-$(RM) $(RMOPT) $(IMPLIBNAME:/=\)$(_EXP)
+	-$(RM) $(RMOPT) $(DLLNAME:/=\)$(_ILK)
+	-$(RM) $(RMOPT) $(PRGOBJS:/=\)
+	-$(RM) $(RMOPT) $(PROGRAMSILK:/=\)
+	-$(RM) $(RMOPT) $(DLLNAME:/=\)$(_ILK)
 
 distclean: clean
-	-del *.exe
-	-del *.exp
-	-del *.dll
+	-$(RM) $(RMOPT) $(DLLNAME:/=\)$(_PDB)
+	-$(RM) $(RMOPT) $(PROGRAMSPDB:/=\)
+	-$(RM) $(RMOPT) $(PROGRAMS:/=\)
+	-$(RM) $(RMOPT) $(TARGETLIB:/=\)
+	-$(RM) $(RMOPT) $(TARGETDLL:/=\)
+	-$(RM) $(RMOPT) $(DLLIMPORTLIB:/=\)
