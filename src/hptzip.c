@@ -28,6 +28,7 @@
 #include "unzip.h"
 
 #ifdef WIN32
+#include <huskylib/unused.h>
 #define USEWIN32IOAPI
 #include "iowin32.h"
 #endif
