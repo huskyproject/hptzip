@@ -4,33 +4,11 @@
 
 
 ## include common makefiles part ##
+!include makefile.inc
 !include ../../huskymak.cfg
 
-!if "$(OBJOUT)" != ""
-
-OBJOUT2=$(OBJOUT)hptzip/
-
-!if [if not exist $(OBJOUT2:/=\) $(MKDIR) $(OBJOUT2:/=\)] == 0
-OBJOUT =$(OBJOUT)hptzip/
-!endif
-
-!endif
-
-!include makefile.inc
-
-ZLIBH	= $(H_DIR)
-# or set it to directory with zlib sources
-#ZLIBH	= 
-
-!if $(DEBUG) == 1
-# You can set both to the same value if no debug version exist or if
-# no zlib debug needed.
-# ZLIBL can point to static library or import library for dll.
-# It is at your option and does not depend on DYNLIBS value.
-ZLIBL   = ..\zdlld.lib
-!else
-ZLIBL   = ..\zdll.lib
-!endif
+# ZLIBH and ZLIBL are set in huskymak.cfg as ZLIBL is needed for every
+# project using static hptzip library
 
 # set to 1 for manual loading that doesn't require zlib.dll to run hpt.exe
 ZLIBDL=0
@@ -39,19 +17,13 @@ ZLIBDL=0
 CDEFSDL = -DZLIBDL
 !endif
 
-IMPLIBNAME=$(LIBOUT)$(IMPLIBPREFIX)$(LIBNAME)$(DLLSUFFIX)
-DLLNAME=$(BINOUT)$(DLLPREFIX)$(LIBNAME)$(DLLSUFFIX)
-DLLIMPORTLIB=$(IMPLIBNAME)$(_LIB)
-PROGRAMSILK=$(PROGRAMS:.exe=.ilk)
-PROGRAMSPDB=$(PROGRAMS:.exe=.pdb)
 
 ## program options ##
 
 ## options for compiler ##
-
 CINCL	= -I$(ZLIBH) -I$(H_DIR) -I../../huskylib
 
-CFLAGS	= $(CFLAGS) $(CINCL) $(CDEFSDL) -D"NOUNCRPYT"
+CFLAGS	= $(CFLAGS) $(CINCL) $(CDEFSDL) -DNOUNCRYPT -DNOCRYPT
 
 ## options for linker ##
 LFLAGS=$(LFLAGS) $(LINKPDBOPT)$(BINOUT)
@@ -59,13 +31,9 @@ LFLAGS=$(LFLAGS) $(LINKPDBOPT)$(BINOUT)
 LDLLFLAGS=$(LDLLFLAGS) $(LINKNAMEOPT)$(TARGETDLL) \
 	  $(LINKPDBOPT)$(BINOUT) /implib:$(DLLIMPORTLIB)
 
-# libraries need to build binary file
-# for dynamic libraries:
-#DLLS	= $(LIBS)
-
-# for executables
-#LIBSL	= $(LIBS) 
-
+# List of HUSKY libraries required to build binary file(s)
+# for executables -- $(LIBSL)
+# for dynamic libraries -- $(DLLS)
 !if $(DYNLIBS)==1
 DLLS	= $(LIBS) $(ZLIBL)
 # Note: Executables depend only on hptzip.lib not zlib.lib
@@ -93,7 +61,7 @@ all: lib programs
 
 $(OBJS) $(PRGOBJS): $(HEADERS) makefile.mvc ../../huskymak.cfg makefile.inc
 
-{$(SRC_DIR)}$(_C){$(O)}$(_OBJ)::
+{$(_SRC_DIR)}$(_C){$(O)}$(_OBJ)::
 	@$(CC) $(CFLAGS) $(OBJOPT) $(OBJNAMEOPT)$(O) @<<
 $<
 <<
