@@ -1,0 +1,21 @@
+Source: hptzip
+Section: library/mail
+Priority: optional
+Maintainer: Vova Shilov <shilow@ukr.net>
+Build-Depends: debhelper (>> 4.0.0)
+Standards-Version: 3.5.8
+
+Package: libhptzip-dev
+Section: libdevel
+Architecture: any
+Depends: libhptzip
+Description: hptzip library development files
+ The HPTZIP library implements the ZipInternal packer/unpacker for HPT fidonet tosser
+ This library is a part of HUSKY Portable Fidosoft Project.
+
+Package: libhptzip
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: hptzip library
+ The HPTZIP library implements the ZipInternal packer/unpacker for HPT fidonet tosser
+ This library is a part of HUSKY Portable Fidosoft Project.
