@@ -19,10 +19,10 @@ VER_RELEASE=0
 
 ifeq ($(DEBUG), 1)
   CFLAGS = -I../hptzip -I$(INCDIR) $(DEBCFLAGS) $(WARNFLAGS)
-  LFLAGS = -L../../build/$(PLATFORM)/lib -I$(LIBDIR) $(DEBLFLAGS)
+  LFLAGS = $(DEBLFLAGS)
 else
   CFLAGS = -I../hptzip -I$(INCDIR) $(OPTCFLAGS) $(WARNFLAGS)
-  LFLAGS = -L../../build/$(PLATFORM)/lib -I$(LIBDIR) $(OPTLFLAGS)
+  LFLAGS = $(OPTLFLAGS)
 endif
 # /vk was:
 #CFLAGS+= -I../hptzip -I$(INCDIR) $(OPTCFLAGS) $(WARNFLAGS)
