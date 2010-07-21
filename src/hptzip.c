@@ -277,8 +277,8 @@ int do_extract_currentfile(unzFile uf,
     {
         if ((*popt_extract_without_path)==0)
         {
-            //printf("creating directory: %s\n",filename_inzip);
-            //mymkdir(filename_inzip);
+            /* printf("creating directory: %s\n",filename_inzip);
+            mymkdir(filename_inzip); */
         }
     }
     else
@@ -338,11 +338,11 @@ int do_extract_currentfile(unzFile uf,
             if ((fout==NULL) && ((*popt_extract_without_path)==0) &&
                                 (filename_withoutpath!=(char*)filename_inzip))
             {
-                //char c=*(filename_withoutpath-1);
-                //*(filename_withoutpath-1)='\0';
-                //makedir(write_filename);
-                //*(filename_withoutpath-1)=c;
-                //fout=fopen(write_filename,"wb");
+                /* char c=*(filename_withoutpath-1);
+                *(filename_withoutpath-1)='\0';
+                makedir(write_filename);
+                *(filename_withoutpath-1)=c;
+                fout=fopen(write_filename,"wb"); */
             }
 
             if (fout==NULL)
