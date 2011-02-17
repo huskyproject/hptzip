@@ -32,7 +32,7 @@ CDEFS=-D$(OSTYPE) -DUNAME=\"$(UNAME)\" $(ADDCDEFS)
 
 OBJS    = hptzip$(_OBJ) ioapi$(_OBJ) unzip$(_OBJ) zip$(_OBJ)
 SRC_DIR = src/
-DESTDIR=1111
+DESTDIR?=
 
 default: all
 
