@@ -2,18 +2,21 @@
 # 
 # Microsoft Visual C++ Makefile for build hptzip LIB or DLL
 
+MAKEFILE_MVC = makefile.mvc
+MAKEFILE_HUSKYMAK = ../../huskybse/huskymak.cfg.mvc
+MAKEFILE_INC = makefile.inc
 
 ## include common makefiles part ##
-!include makefile.inc
-!include ../../huskymak.cfg
+!include $(MAKEFILE_INC)
+!include $(MAKEFILE_HUSKYMAK)
+
+MAKEFILES = $(MAKEFILE_MVC) $(MAKEFILE_HUSKYMAK) $(MAKEFILE_INC)
 
 # ZLIBH and ZLIBL are set in huskymak.cfg as ZLIBL is needed for every
 # project using static hptzip library
+# ZLIBDL may be set in command line
 
-# set to 1 for manual loading that doesn't require zlib.dll to run hpt.exe
-ZLIBDL=0
-
-!if $(ZLIBDL) == 1
+!if "$(ZLIBDL)" == "1"
 CDEFSDL = -DZLIBDL
 !endif
 
@@ -48,18 +51,19 @@ TARGETLIBNAME=$(TARGETLIB)
 !endif
 
 default:
-	@echo Set DYNLIBS=1 in huskymak.cfg to build dynamic version of library
+	@echo Specify a parameter DYNLIBS=1 in the command line to build dynamic version
+	@echo of the library
+	@echo Specify a parameter ZLIBDL=0 in the command line for manual loading that
+	@echo doesn't require zlib.dll
 	@echo Run 'make lib' to build library ($(TARGETLIBNAME))
-	@echo Run 'make all' to build library ($(TARGETLIBNAME))
-	@echo _    and programs ($(PROGRAMS))
-
-lib: $(TARGETLIBNAME)
-
-programs: $(PROGRAMS)
+	@echo Run 'make all' to build this library and programs ($(PROGRAMS))
 
 all: lib programs
+lib: $(TARGETLIBNAME)
+programs: $(PROGRAMS) $(MAKEFILES)
 
-$(OBJS) $(PRGOBJS): $(HEADERS) makefile.mvc ../../huskymak.cfg makefile.inc
+$(OBJS) $(PRGOBJS) : $(HEADERS) $(MAKEFILES)
+
 
 {$(_SRC_DIR)}$(_C){$(O)}$(_OBJ)::
 	@$(CC) $(CFLAGS) $(OBJOPT) $(OBJNAMEOPT)$(O) @<<
