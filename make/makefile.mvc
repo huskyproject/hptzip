@@ -3,7 +3,9 @@
 # Microsoft Visual C++ Makefile for build hptzip LIB or DLL
 
 MAKEFILE_MVC = makefile.mvc
+!if "$(MAKEFILE_HUSKYMAK)" == ""
 MAKEFILE_HUSKYMAK = ../../huskybse/huskymak.cfg.mvc
+!endif
 MAKEFILE_INC = makefile.inc
 
 ## include common makefiles part ##
@@ -55,6 +57,8 @@ default:
 	@echo of the library
 	@echo Specify a parameter ZLIBDL=0 in the command line for manual loading that
 	@echo doesn't require zlib.dll
+	@echo "Specify a parameter MAKEFILE_HUSKYMAK=/path/to/your.huskymak.cfg to build"
+	@echo "using your own parameters"
 	@echo Run 'make lib' to build library ($(TARGETLIBNAME))
 	@echo Run 'make all' to build this library and programs ($(PROGRAMS))
 
