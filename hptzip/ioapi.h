@@ -22,6 +22,8 @@
 #define _ZLIBIOAPI64_H
 
 #if (!defined(_WIN32)) && (!defined(WIN32))
+#include <features.h>
+#if defined _FILE_OFFSET_BITS && _FILE_OFFSET_BITS == 64
 
   /* Linux needs this to support file operation on files larger then 4+GB
      But might need better if/def to select just the platforms that needs them. */
@@ -38,7 +40,8 @@
         #ifndef _FILE_OFFSET_BIT
                 #define _FILE_OFFSET_BIT 64
         #endif
-#endif
+#endif /* _FILE_OFFSET_BITS */
+#endif /* _WIN32 */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -124,14 +127,14 @@ extern "C" {
 
 
 
-typedef voidpf   (ZCALLBACK *open_file_func)      OF((voidpf opaque, const char* filename, int mode));
-typedef uLong    (ZCALLBACK *read_file_func)      OF((voidpf opaque, voidpf stream, void* buf, uLong size));
-typedef uLong    (ZCALLBACK *write_file_func)     OF((voidpf opaque, voidpf stream, const void* buf, uLong size));
-typedef int      (ZCALLBACK *close_file_func)     OF((voidpf opaque, voidpf stream));
-typedef int      (ZCALLBACK *testerror_file_func) OF((voidpf opaque, voidpf stream));
+typedef voidpf   (ZCALLBACK *open_file_func)      _Z_OF((voidpf opaque, const char* filename, int mode));
+typedef uLong    (ZCALLBACK *read_file_func)      _Z_OF((voidpf opaque, voidpf stream, void* buf, uLong size));
+typedef uLong    (ZCALLBACK *write_file_func)     _Z_OF((voidpf opaque, voidpf stream, const void* buf, uLong size));
+typedef int      (ZCALLBACK *close_file_func)     _Z_OF((voidpf opaque, voidpf stream));
+typedef int      (ZCALLBACK *testerror_file_func) _Z_OF((voidpf opaque, voidpf stream));
 
-typedef long     (ZCALLBACK *tell_file_func)      OF((voidpf opaque, voidpf stream));
-typedef long     (ZCALLBACK *seek_file_func)      OF((voidpf opaque, voidpf stream, uLong offset, int origin));
+typedef long     (ZCALLBACK *tell_file_func)      _Z_OF((voidpf opaque, voidpf stream));
+typedef long     (ZCALLBACK *seek_file_func)      _Z_OF((voidpf opaque, voidpf stream, uLong offset, int origin));
 
 
 /* here is the "old" 32 bits structure structure */
@@ -147,9 +150,9 @@ typedef struct zlib_filefunc_def_s
     voidpf              opaque;
 } zlib_filefunc_def;
 
-typedef ZPOS64_T (ZCALLBACK *tell64_file_func)    OF((voidpf opaque, voidpf stream));
-typedef long     (ZCALLBACK *seek64_file_func)    OF((voidpf opaque, voidpf stream, ZPOS64_T offset, int origin));
-typedef voidpf   (ZCALLBACK *open64_file_func)    OF((voidpf opaque, const void* filename, int mode));
+typedef ZPOS64_T (ZCALLBACK *tell64_file_func)    _Z_OF((voidpf opaque, voidpf stream));
+typedef long     (ZCALLBACK *seek64_file_func)    _Z_OF((voidpf opaque, voidpf stream, ZPOS64_T offset, int origin));
+typedef voidpf   (ZCALLBACK *open64_file_func)    _Z_OF((voidpf opaque, const void* filename, int mode));
 
 typedef struct zlib_filefunc64_def_s
 {
@@ -163,8 +166,8 @@ typedef struct zlib_filefunc64_def_s
     voidpf              opaque;
 } zlib_filefunc64_def;
 
-void fill_fopen64_filefunc OF((zlib_filefunc64_def* pzlib_filefunc_def));
-void fill_fopen_filefunc OF((zlib_filefunc_def* pzlib_filefunc_def));
+void fill_fopen64_filefunc _Z_OF((zlib_filefunc64_def* pzlib_filefunc_def));
+void fill_fopen_filefunc _Z_OF((zlib_filefunc_def* pzlib_filefunc_def));
 
 /* now internal definition, only for zip.c and unzip.h */
 typedef struct zlib_filefunc64_32_def_s
@@ -183,9 +186,9 @@ typedef struct zlib_filefunc64_32_def_s
 #define ZCLOSE64(filefunc,filestream)             ((*((filefunc).zfile_func64.zclose_file))  ((filefunc).zfile_func64.opaque,filestream))
 #define ZERROR64(filefunc,filestream)             ((*((filefunc).zfile_func64.zerror_file))  ((filefunc).zfile_func64.opaque,filestream))
 
-voidpf call_zopen64 OF((const zlib_filefunc64_32_def* pfilefunc,const void*filename,int mode));
-long    call_zseek64 OF((const zlib_filefunc64_32_def* pfilefunc,voidpf filestream, ZPOS64_T offset, int origin));
-ZPOS64_T call_ztell64 OF((const zlib_filefunc64_32_def* pfilefunc,voidpf filestream));
+voidpf call_zopen64 _Z_OF((const zlib_filefunc64_32_def* pfilefunc,const void*filename,int mode));
+long    call_zseek64 _Z_OF((const zlib_filefunc64_32_def* pfilefunc,voidpf filestream, ZPOS64_T offset, int origin));
+ZPOS64_T call_ztell64 _Z_OF((const zlib_filefunc64_32_def* pfilefunc,voidpf filestream));
 
 void    fill_zlib_filefunc64_32_def_from_filefunc32(zlib_filefunc64_32_def* p_filefunc64_32,const zlib_filefunc_def* p_filefunc32);
 
