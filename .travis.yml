@@ -18,7 +18,7 @@ script:
   - cmake ..
   - cmake --build .
   - sudo make install
-  - cd  ~/build/huskyproject/hptzip
+  - cd  $TRAVIS_BUILD_DIR
   - mkdir build
   - cd build
   - cmake ..
