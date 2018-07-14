@@ -52,6 +52,7 @@ message("Compiler          : ${CMAKE_C_COMPILER_ID} ${CMAKE_C_COMPILER_VERSION}"
 message("Prefix            : ${CMAKE_INSTALL_PREFIX} (run \"cmake . -DCMAKE_INSTALL_PREFIX:PATH=/other\" for other prefix)")
 message("libhusky          : ${husky_LIB}")
 message("zlib              : ${ZLIB_LIBRARIES}")
+message("Build shared      : ${BUILD_SHARED_LIBS}")
 message("Build type        : ${CMAKE_CONFIGURATION_TYPES}")
 message("-------------------------")
 
@@ -77,7 +78,7 @@ endif()
 
 
 
-ADD_LIBRARY(hptzip SHARED ${hptzip_SOURCES})
+ADD_LIBRARY(hptzip ${hptzip_SOURCES})
 set_target_properties(hptzip PROPERTIES VERSION ${hptzip_VERSION})
 set_target_properties(hptzip PROPERTIES PUBLIC_HEADER "${hptzip_HEADERS}")
 target_link_libraries(hptzip ${husky_LIB} ${ZLIB_LIBRARIES})
