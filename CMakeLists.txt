@@ -3,7 +3,7 @@ PROJECT(hptzip C)
 set(hptzip_VERSION 1.9.0)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-
+option(BUILD_SHARED_LIBS "Build shared libs" ON)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
   ADD_DEFINITIONS(-g -DDEBUG -D_DEBUG)
@@ -14,10 +14,13 @@ else(CMAKE_BUILD_TYPE MATCHES Debug)
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 if (MSVC)
+  if (BUILD_SHARED_LIBS)
+    ADD_DEFINITIONS(-D_DLL -D_MAKE_DLL)
+  endif()
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../out/lib")
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../out/bin")
   SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
-  ADD_DEFINITIONS(-DWIN32 -D_WINDOWS -D_DLL -D_CONSOLE -D_MAKE_DLL -D_CRT_SECURE_NO_WARNINGS)
+  ADD_DEFINITIONS(-DWIN32 -D_WINDOWS -D_CONSOLE -D_CRT_SECURE_NO_WARNINGS)
   if(NOT "${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)")
     set(ZLIB_ROOT "zlib-win32")
   else()
@@ -49,6 +52,7 @@ message("Compiler          : ${CMAKE_C_COMPILER_ID} ${CMAKE_C_COMPILER_VERSION}"
 message("Prefix            : ${CMAKE_INSTALL_PREFIX} (run \"cmake . -DCMAKE_INSTALL_PREFIX:PATH=/other\" for other prefix)")
 message("libhusky          : ${husky_LIB}")
 message("zlib              : ${ZLIB_LIBRARIES}")
+message("Build shared      : ${BUILD_SHARED_LIBS}")
 message("Build type        : ${CMAKE_CONFIGURATION_TYPES}")
 message("-------------------------")
 
@@ -74,7 +78,7 @@ endif()
 
 
 
-ADD_LIBRARY(hptzip SHARED ${hptzip_SOURCES})
+ADD_LIBRARY(hptzip ${hptzip_SOURCES})
 set_target_properties(hptzip PROPERTIES VERSION ${hptzip_VERSION})
 set_target_properties(hptzip PROPERTIES PUBLIC_HEADER "${hptzip_HEADERS}")
 target_link_libraries(hptzip ${husky_LIB} ${ZLIB_LIBRARIES})
@@ -85,6 +89,7 @@ if (NOT MSVC)
 INSTALL(TARGETS hptzip
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
   PUBLIC_HEADER DESTINATION include/hptzip
 )
   set(CPACK_GENERATOR ${CPACK_GENERATOR} TGZ)
