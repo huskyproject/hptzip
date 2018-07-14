@@ -30,7 +30,7 @@ matrix:
             - gcc-8
       env:
         - MATRIX_EVAL="CC=gcc-8" CF=-DBUILD_SHARED_LIBS=ON
-    - os: osx
+    - os: linux
       sudo: false
       language: c
       env:
