@@ -13,6 +13,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
+#include "zip.h"
+#include "unzip.h"
+
 #include <errno.h>
 #include <fcntl.h>
 
@@ -23,10 +27,6 @@
 # include <direct.h>
 # include <io.h>
 #endif
-
-#include "zip.h"
-#include "unzip.h"
-
 #ifdef WIN32
 #include <huskylib/unused.h>
 #define USEWIN32IOAPI
