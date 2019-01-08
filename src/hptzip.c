@@ -219,7 +219,7 @@ int getFileCrc(const char* filenameinzip,void*buf,unsigned long size_buf,unsigne
             }
 
             if (size_read>0)
-                calculate_crc = crc32(calculate_crc,buf,size_read);
+                calculate_crc = crc32(calculate_crc, (const Bytef *)buf, size_read);
             total_read += size_read;
 
         } while ((err == ZIP_OK) && (size_read>0));
