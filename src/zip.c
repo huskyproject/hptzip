@@ -62,7 +62,7 @@
 # define ALLOC(size) (malloc(size))
 #endif
 #ifndef TRYFREE
-# define TRYFREE(p) {if (p) free(p);}
+# define TRYFREE(p) {if (p) {free(p); p = NULL;}}
 #endif
 
 /*
@@ -1696,7 +1696,7 @@ extern int ZEXPORT zipCloseFileInZipRaw64 (zipFile file, ZPOS64_T uncompressed_s
     if (err==ZIP_OK)
         err = add_data_in_datablock(&zi->central_dir, zi->ci.central_header, (uLong)zi->ci.size_centralheader);
 
-    free(zi->ci.central_header);
+    TRYFREE(zi->ci.central_header);
 
     if (err==ZIP_OK)
     {

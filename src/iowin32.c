@@ -17,6 +17,8 @@
 #include "ioapi.h"
 #include "iowin32.h"
 
+#define nfree(a) {if(a != NULL) {free(a); a = NULL;}}
+
 #ifndef INVALID_HANDLE_VALUE
 #define INVALID_HANDLE_VALUE (0xFFFFFFFF)
 #endif
@@ -319,7 +321,7 @@ int ZCALLBACK win32_close_file_func (voidpf opaque, voidpf stream)
             CloseHandle(hFile);
             ret=0;
         }
-        free(stream);
+        nfree(stream);
     }
     return ret;
 }

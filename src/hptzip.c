@@ -37,6 +37,8 @@
 #include <huskylib/huskyext.h>
 #include "hptzip.h"
 
+#define nfree(a) {if(a != NULL) {free(a); a = NULL;}}
+
 #ifdef ZLIBDL
 #include "hptzipdl.h"
 crc32_func          *dl_crc32 = NULL;
@@ -394,7 +396,7 @@ int do_extract_currentfile(unzFile uf,
             unzCloseCurrentFile(uf); /* don't lose the error */
     }
 
-    free(buf);
+    nfree(buf);
     return err;
 }
 
@@ -624,7 +626,7 @@ int PackWithZlib(char * zipfilenamearg, char * filenameinzip)
             printf("error in closing %s\n",zipfilenamearg);
     }
 
-    free(buf);
+    nfree(buf);
     return err;
 }
 
