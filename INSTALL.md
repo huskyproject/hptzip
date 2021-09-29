@@ -37,10 +37,9 @@ Instruction to build hptzip
 
    Example 1 (use common makefile (named 'Makefile'): requires huskymak.cfg (see
               huskybse); unixes only):
-```sh
-	$ make
-	$ make install
-```
+
+See huskybse/INSTALL.asciidoc
+
    Example 2 (use platfom-specific makefile):
 ```sh
    unix:
