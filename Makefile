@@ -1,70 +1,166 @@
-# Generic Makefile for hptzip
+# hptzip/Makefile
+#
+# This file is part of hptzip, part of the Husky fidonet software project
+# Use with GNU make v.3.82 or later
+# Requires: husky enviroment
+#
 
-ifeq ($(DEBIAN), 1)
-# Every Debian-Source-Paket has one included.
-include /usr/share/husky/huskymak.cfg
+# Version
+hptzip_g1:=$(GREP) -Po 'define\s+HZ_VER_MAJOR\s+\K\d+'
+hptzip_g2:=$(GREP) -Po 'define\s+HZ_VER_MINOR\s+\K\d+'
+hptzip_g3:=$(GREP) -Po 'define\s+HZ_VER_PATCH\s+\K\d+'
+hptzip_g4:=$(GREP) -Po 'char\s+cvs_date\[\]\s*=\s*"\K\d+-\d+-\d+'
+hptzip_VERMAJOR := $(shell $(hptzip_g1) $(hptzip_ROOTDIR)$(hptzip_H_DIR)version.h)
+hptzip_VERMINOR := $(shell $(hptzip_g2) $(hptzip_ROOTDIR)$(hptzip_H_DIR)version.h)
+hptzip_VERPATCH := $(shell $(hptzip_g3) $(hptzip_ROOTDIR)$(hptzip_H_DIR)version.h)
+hptzip_VERH     := $(hptzip_VERMAJOR).$(hptzip_VERMINOR)
+hptzip_cvsdate  := $(shell $(hptzip_g4) $(hptzip_ROOTDIR)cvsdate.h)
+hptzip_reldate  := $(subst -,,$(hptzip_cvsdate))
+hptzip_VER      := $(hptzip_VERH).$(hptzip_reldate)
+
+# Object files of the library
+# Please sort the list to make checking it by human easy
+hptzip_OBJFILES = $(O)hptzip$(_OBJ) $(O)ioapi$(_OBJ) $(O)unzip$(_OBJ) \
+                  $(O)zip$(_OBJ)
+
+hptzip_OBJS := $(addprefix $(hptzip_OBJDIR),$(hptzip_OBJFILES))
+
+hptzip_DEPS := $(hptzip_OBJFILES)
+ifdef O
+    hptzip_DEPS := $(hptzip_DEPS:$(O)=)
+endif
+ifdef _OBJ
+    hptzip_DEPS := $(hptzip_DEPS:$(_OBJ)=$(_DEP))
 else
-include ../huskymak.cfg
+    hptzip_DEPS := $(addsuffix $(_DEP),$(hptzip_DEPS))
+endif
+hptzip_DEPS := $(addprefix $(hptzip_DEPDIR),$(hptzip_DEPS))
+
+# Static and dynamic target libraries
+hptzip_TARGETLIB := $(L)$(LIBPREFIX)$(hptzip_LIBNAME)$(LIBSUFFIX)$(_LIB)
+hptzip_TARGETDLL := $(B)$(DLLPREFIX)$(hptzip_LIBNAME)$(DLLSUFFIX)$(_DLL)
+
+ifeq ($(DYNLIBS), 1)
+    hptzip_TARGET = $(hptzip_TARGETDLL).$(hptzip_VER)
+else
+    hptzip_TARGET = $(hptzip_TARGETLIB)
 endif
 
-LIBNAME = hptzip
-VER_MAJOR=0
-VER_MINOR=1
-VER_RELEASE=0
-HEADERS = $(LIBNAME)$(DIRSEP)hptzip.h
+hptzip_TARGET_BLD = $(hptzip_BUILDDIR)$(hptzip_TARGET)
+hptzip_TARGET_DST = $(LIBDIR_DST)$(hptzip_TARGET)
 
-ifeq ($(DEBUG), 1)
-  CFLAGS = $(DEBCFLAGS) -I$(LIBNAME) -I$(INCDIR) $(WARNFLAGS)
-  LFLAGS = $(DEBLFLAGS)
-else
-  CFLAGS = $(OPTCFLAGS) -I$(LIBNAME) -I$(INCDIR) $(WARNFLAGS)
-  LFLAGS = $(OPTLFLAGS)
+hptzip_CDEFS := $(CDEFS) -I$(hptzip_ROOTDIR)$(hptzip_H_DIR) -I$(huskylib_ROOTDIR)
+
+.PHONY: hptzip_all hptzip_install hptzip_install-dynlib \
+        hptzip_uninstall hptzip_clean hptzip_distclean hptzip_depend \
+        hptzip_rm_OBJS hptzip_rm_BLD hptzip_rm_DEP hptzip_rm_DEPS
+
+hptzip_all: $(hptzip_TARGET_BLD)
+
+ifneq ($(MAKECMDGOALS), depend)
+ifneq ($(MAKECMDGOALS), distclean)
+ifneq ($(MAKECMDGOALS), uninstall)
+    include $(hptzip_DEPS)
+endif
+endif
 endif
 
-LIBS  = -L$(LIBDIR)
-SHAREDOPT= -shared
-LIBPREFIX=lib
-TARGETLIB = $(LIBPREFIX)$(LIBNAME)$(_LIB)
-TARGETDLL = $(LIBPREFIX)$(LIBNAME)$(_DLL)
+# Make a hard link of the library in $(hptzip_BUILDDIR)
+$(hptzip_TARGET_BLD): $(hptzip_OBJDIR)$(hptzip_TARGET)
+	$(LN) $(LNHOPT) $< $(hptzip_BUILDDIR)
 
-CDEFS=-D$(OSTYPE) -DUNAME=\"$(UNAME)\" $(ADDCDEFS)
+# Build the static library
+$(hptzip_OBJDIR)$(hptzip_TARGETLIB): $(hptzip_OBJS) | do_not_run_make_as_root
+	cd $(hptzip_OBJDIR); $(AR) $(AR_R) $(hptzip_TARGETLIB) $(^F)
+ifdef RANLIB
+	cd $(hptzip_OBJDIR); $(RANLIB) $(hptzip_TARGETLIB)
+endif
 
-OBJS    = hptzip$(_OBJ) ioapi$(_OBJ) unzip$(_OBJ) zip$(_OBJ)
-SRC_DIR = src/
-DESTDIR?=
+# Build the dynamic library
+$(hptzip_OBJDIR)$(hptzip_TARGETDLL).$(hptzip_VER): $(hptzip_OBJS) | do_not_run_make_as_root
+ifeq (~$(MKSHARED)~,~ld~)
+	$(LD) $(LFLAGS) -o $(hptzip_OBJDIR)$(hptzip_TARGETDLL).$(hptzip_VER) \
+	$(hptzip_OBJS)
+else
+	$(CC) $(LFLAGS) -shared -Wl,-soname,$(hptzip_TARGETDLL).$(hptzip_VER) \
+	-o $(hptzip_OBJDIR)$(hptzip_TARGETDLL).$(hptzip_VER) $(hptzip_OBJS)
+endif
 
-default: all
+# Compile .c files
+$(hptzip_OBJS): $(hptzip_OBJDIR)%$(_OBJ): $(hptzip_SRCDIR)%.c | $(hptzip_OBJDIR) do_not_run_make_as_root
+	$(CC) $(CFLAGS) $(hptzip_CDEFS) -o $(hptzip_OBJDIR)$*$(_OBJ) $(hptzip_SRCDIR)$*.c
 
-$(TARGETDLL): $(OBJS)
-	$(CC) $(SHAREDOPT) $(LFLAGS) $(OBJS) $(LIBS) -o $(TARGETDLL)
+$(hptzip_OBJDIR): | $(hptzip_BUILDDIR) do_not_run_make_as_root
+	[ -d $@ ] || $(MKDIR) $(MKDIROPT) $@
 
-$(TARGETLIB): $(OBJS)
-	$(AR) $(AR_R) $(TARGETLIB) $(OBJS)
+# Install
+hptzip_install: hptzip_install-dynlib ;
 
-%$(_OBJ): $(SRC_DIR)%.c
-	$(CC) $(CFLAGS) $(CDEFS) $(SRC_DIR)$*.c
+ifneq ($(DYNLIBS), 1)
+    hptzip_install-dynlib: ;
+else
+    ifneq ($(strip $(LDCONFIG)),)
+        hptzip_install-dynlib: \
+            $(LIBDIR_DST)$(hptzip_TARGETDLL).$(hptzip_VER)
+		-@$(LDCONFIG) >& /dev/null || true
+    else
+        hptzip_install-dynlib: \
+            $(LIBDIR_DST)$(hptzip_TARGETDLL).$(hptzip_VER) ;
+    endif
 
-clean:
-	-$(RM) $(RMOPT) *$(_OBJ)
-	-$(RM) $(RMOPT) *~
-	-$(RM) $(RMOPT) core
+    $(LIBDIR_DST)$(hptzip_TARGETDLL).$(hptzip_VER): \
+        $(hptzip_BUILDDIR)$(hptzip_TARGETDLL).$(hptzip_VER) | \
+        $(DESTDIR)$(LIBDIR)
+		$(INSTALL) $(ILOPT) $< $(DESTDIR)$(LIBDIR); \
+		cd $(DESTDIR)$(LIBDIR); \
+		$(TOUCH) $(hptzip_TARGETDLL).$(hptzip_VER); \
+		$(LN) $(LNOPT) $(hptzip_TARGETDLL).$(hptzip_VER) $(hptzip_TARGETDLL).$(hptzip_VERH); \
+		$(LN) $(LNOPT) $(hptzip_TARGETDLL).$(hptzip_VER) $(hptzip_TARGETDLL)
+endif
 
-distclean: clean
-	-$(RM) $(RMOPT) $(TARGETDLL)
-	-$(RM) $(RMOPT) $(TARGETLIB)
 
-all: $(TARGETDLL) $(TARGETLIB)
+# Clean
+hptzip_clean: hptzip_rm_OBJS
+	-[ -d "$(hptzip_OBJDIR)" ] && $(RMDIR) $(hptzip_OBJDIR) || true
 
-install: all
-	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(LIBDIR)
-	$(INSTALL) $(IBOPT) $(TARGETLIB) $(DESTDIR)$(LIBDIR)
-	$(INSTALL) $(IBOPT) $(TARGETDLL) $(DESTDIR)$(LIBDIR)
-	$(LN) $(LNOPT) $(TARGETDLL) $(DESTDIR)$(LIBDIR)$(DIRSEP)$(TARGETDLL).$(VER_MAJOR).$(VER_MINOR).$(VER_RELEASE)
-	$(LN) $(LNOPT) $(TARGETDLL) $(DESTDIR)$(LIBDIR)$(DIRSEP)$(TARGETDLL).$(VER_MAJOR).$(VER_MINOR)
-	$(LN) $(LNOPT) $(TARGETDLL) $(DESTDIR)$(LIBDIR)$(DIRSEP)$(TARGETDLL).$(VER_MAJOR)
-	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(INCDIR)$(DIRSEP)$(LIBNAME)
-	$(CP) $(HEADERS) $(DESTDIR)$(INCDIR)$(DIRSEP)$(LIBNAME)
+hptzip_rm_OBJS:
+	-$(RM) $(RMOPT) $(hptzip_OBJDIR)*
 
-uninstall:
-	$(RM) $(RMOPT) $(LIBDIR)$(DIRSEP)$(TARGETDLL)
-	$(RM) $(RMOPT) $(LIBDIR)$(DIRSEP)$(TARGETLIB)
+
+# Distclean
+hptzip_distclean: hptzip_clean hptzip_rm_BLD
+	-[ -d "$(hptzip_BUILDDIR)" ] && $(RMDIR) $(hptzip_BUILDDIR) || true
+
+hptzip_rm_BLD: hptzip_rm_DEP
+	-$(RM) $(RMOPT) $(hptzip_BUILDDIR)$(hptzip_TARGET)
+
+hptzip_rm_DEP: hptzip_rm_DEPS
+	-[ -d "$(hptzip_DEPDIR)" ] && $(RMDIR) $(hptzip_DEPDIR) || true
+
+hptzip_rm_DEPS:
+	-$(RM) $(RMOPT) $(hptzip_DEPDIR)*
+
+
+# Uninstall
+ifeq ($(DYNLIBS), 1)
+    hptzip_uninstall:
+		-$(RM) $(RMOPT) $(DESTDIR)$(LIBDIR)$(DIRSEP)$(hptzip_TARGETDLL)*
+else
+    hptzip_uninstall: ;
+endif
+
+# Depend
+hptzip_depend: $(hptzip_DEPS) ;
+
+# Build dependency makefiles for every source file
+$(hptzip_DEPS): $(hptzip_DEPDIR)%$(_DEP): $(hptzip_SRCDIR)%.c | $(hptzip_DEPDIR)
+	@set -e; rm -f $@; \
+	$(CC) -MM $(CFLAGS) $(hptzip_CDEFS) $< > $@.$$$$; \
+	sed 's,\($*\)$(_OBJ)[ :]*,$(hptzip_OBJDIR)\1$(_OBJ) $@ : ,g' < $@.$$$$ > $@; \
+	rm -f $@.$$$$
+
+$(hptzip_DEPDIR): | $(hptzip_BUILDDIR) do_not_run_depend_as_root
+	[ -d $@ ] || $(MKDIR) $(MKDIROPT) $@
+
+$(hptzip_BUILDDIR):
+	[ -d $@ ] || $(MKDIR) $(MKDIROPT) $@
