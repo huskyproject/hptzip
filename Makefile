@@ -150,6 +150,7 @@ else
 endif
 
 # Depend
+ifeq ($(MAKECMDGOALS),depend)
 hptzip_depend: $(hptzip_DEPS) ;
 
 # Build dependency makefiles for every source file
@@ -161,6 +162,7 @@ $(hptzip_DEPS): $(hptzip_DEPDIR)%$(_DEP): $(hptzip_SRCDIR)%.c | $(hptzip_DEPDIR)
 
 $(hptzip_DEPDIR): | $(hptzip_BUILDDIR) do_not_run_depend_as_root
 	[ -d $@ ] || $(MKDIR) $(MKDIROPT) $@
+endif
 
 $(hptzip_BUILDDIR):
 	[ -d $@ ] || $(MKDIR) $(MKDIROPT) $@
