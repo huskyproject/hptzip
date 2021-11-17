@@ -20,7 +20,8 @@
 #include <errno.h>
 #include <fcntl.h>
 
-#ifdef unix
+#include "huskylib/compiler.h"
+#if defined(__UNIX__)
 # include <unistd.h>
 # include <utime.h>
 #else
