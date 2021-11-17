@@ -79,11 +79,10 @@ endif
 # Build the dynamic library
 $(hptzip_OBJDIR)$(hptzip_TARGETDLL).$(hptzip_VER): $(hptzip_OBJS) | do_not_run_make_as_root
 ifeq (~$(MKSHARED)~,~ld~)
-	$(LD) $(LFLAGS) -o $(hptzip_OBJDIR)$(hptzip_TARGETDLL).$(hptzip_VER) \
-	$(hptzip_OBJS)
+	$(LD) $(LFLAGS) -o $@ -lz $(hptzip_OBJS)
 else
 	$(CC) $(LFLAGS) -shared -Wl,-soname,$(hptzip_TARGETDLL).$(hptzip_VER) \
-	-o $(hptzip_OBJDIR)$(hptzip_TARGETDLL).$(hptzip_VER) $(hptzip_OBJS)
+	-o $@ $(hptzip_OBJS)
 endif
 
 # Compile .c files
