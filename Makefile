@@ -6,9 +6,9 @@
 #
 
 # Version
-hptzip_g1:=$(GREP) -Po 'define\s+HZ_VER_MAJOR\s+\K\d+'
-hptzip_g2:=$(GREP) -Po 'define\s+HZ_VER_MINOR\s+\K\d+'
-hptzip_g3:=$(GREP) -Po 'define\s+HZ_VER_PATCH\s+\K\d+'
+hptzip_g1:=$(GREP) -Po 'define\s+hptzip_VER_MAJOR\s+\K\d+'
+hptzip_g2:=$(GREP) -Po 'define\s+hptzip_VER_MINOR\s+\K\d+'
+hptzip_g3:=$(GREP) -Po 'define\s+hptzip_VER_PATCH\s+\K\d+'
 hptzip_g4:=$(GREP) -Po 'char\s+cvs_date\[\]\s*=\s*"\K\d+-\d+-\d+'
 hptzip_VERMAJOR := $(shell $(hptzip_g1) $(hptzip_ROOTDIR)$(hptzip_H_DIR)version.h)
 hptzip_VERMINOR := $(shell $(hptzip_g2) $(hptzip_ROOTDIR)$(hptzip_H_DIR)version.h)

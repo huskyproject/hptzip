@@ -43,10 +43,10 @@ extern "C" {
 /* }branch_t; */
 
 /* this is version number of HPTzip */
-#define HZ_VER_MAJOR 1
-#define HZ_VER_MINOR 9
-#define HZ_VER_PATCH 0
-#define HZ_VER_BRANCH BRANCH_CURRENT
+#define hptzip_VER_MAJOR  1
+#define hptzip_VER_MINOR  9
+#define hptzip_VER_PATCH  0
+#define hptzip_VER_BRANCH BRANCH_CURRENT
 
 /* Check version of fidoconfig library
  * return zero if test failed; non-zero if passed

@@ -51,12 +51,12 @@ HUSKYEXT int CheckHptzipVersion( int need_major, int need_minor,
 static
 #include "../cvsdate.h"   /* char cvs_date[]=datestring; */
 
-  if( need_major==HZ_VER_MAJOR && need_minor==HZ_VER_MINOR ) {
+  if( need_major==hptzip_VER_MAJOR && need_minor==hptzip_VER_MINOR ) {
     if(need_branch==BRANCH_CURRENT) {
       if(need_patch) fprintf(stderr, "HPTzip: strange, current patch level can't be non-zero\n");
-      return (HZ_VER_BRANCH==BRANCH_CURRENT) && !(cvs && strcmp(cvs,cvs_date));
+      return (hptzip_VER_BRANCH==BRANCH_CURRENT) && !(cvs && strcmp(cvs,cvs_date));
     }
-    else return HZ_VER_BRANCH!=BRANCH_CURRENT;
+    else return hptzip_VER_BRANCH!=BRANCH_CURRENT;
   }
   return 0;
 }
