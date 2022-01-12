@@ -5,19 +5,6 @@
 # Requires: husky enviroment
 #
 
-# Version
-hptzip_g1:=$(GREP) -Po 'define\s+hptzip_VER_MAJOR\s+\K\d+'
-hptzip_g2:=$(GREP) -Po 'define\s+hptzip_VER_MINOR\s+\K\d+'
-hptzip_g3:=$(GREP) -Po 'define\s+hptzip_VER_PATCH\s+\K\d+'
-hptzip_g4:=$(GREP) -Po 'char\s+cvs_date\[\]\s*=\s*"\K\d+-\d+-\d+'
-hptzip_VERMAJOR := $(shell $(hptzip_g1) $(hptzip_ROOTDIR)$(hptzip_H_DIR)version.h)
-hptzip_VERMINOR := $(shell $(hptzip_g2) $(hptzip_ROOTDIR)$(hptzip_H_DIR)version.h)
-hptzip_VERPATCH := $(shell $(hptzip_g3) $(hptzip_ROOTDIR)$(hptzip_H_DIR)version.h)
-hptzip_VERH     := $(hptzip_VERMAJOR).$(hptzip_VERMINOR)
-hptzip_cvsdate  := $(shell $(hptzip_g4) $(hptzip_ROOTDIR)cvsdate.h)
-hptzip_reldate  := $(subst -,,$(hptzip_cvsdate))
-hptzip_VER      := $(hptzip_VERH).$(hptzip_reldate)
-
 # Object files of the library
 # Please sort the list to make checking it by human easy
 hptzip_OBJFILES = $(O)hptzip$(_OBJ) $(O)ioapi$(_OBJ) $(O)unzip$(_OBJ) \
