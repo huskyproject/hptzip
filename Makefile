@@ -38,11 +38,11 @@ hptzip_TARGET_DST = $(LIBDIR_DST)$(hptzip_TARGET)
 
 hptzip_CDEFS := $(CDEFS) -I$(hptzip_ROOTDIR)$(hptzip_H_DIR) -I$(huskylib_ROOTDIR)
 
-.PHONY: hptzip_all hptzip_install hptzip_install-dynlib \
+.PHONY: hptzip_build hptzip_install hptzip_install-dynlib \
         hptzip_uninstall hptzip_clean hptzip_distclean hptzip_depend \
         hptzip_rm_OBJS hptzip_rm_BLD hptzip_rm_DEP hptzip_rm_DEPS
 
-hptzip_all: $(hptzip_TARGET_BLD)
+hptzip_build: $(hptzip_TARGET_BLD)
 
 ifneq ($(MAKECMDGOALS), depend)
 ifneq ($(MAKECMDGOALS), distclean)
