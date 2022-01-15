@@ -118,7 +118,8 @@ hptzip_distclean: hptzip_clean hptzip_rm_BLD
 	-[ -d "$(hptzip_BUILDDIR)" ] && $(RMDIR) $(hptzip_BUILDDIR) || true
 
 hptzip_rm_BLD: hptzip_rm_DEP
-	-$(RM) $(RMOPT) $(hptzip_BUILDDIR)$(hptzip_TARGET)
+	-$(RM) $(RMOPT) $(hptzip_BUILDDIR)$(hptzip_TARGETLIB)
+	-$(RM) $(RMOPT) $(hptzip_BUILDDIR)$(hptzip_TARGETDLL)*
 
 hptzip_rm_DEP: hptzip_rm_DEPS
 	-[ -d "$(hptzip_DEPDIR)" ] && $(RMDIR) $(hptzip_DEPDIR) || true
