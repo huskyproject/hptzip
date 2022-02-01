@@ -592,22 +592,24 @@ int PackWithZlib(char * zipfilenamearg, char * filenameinzip)
                     err = ZIP_OK;
                     size_read = (int)fread(buf,1,size_buf,fin);
                     if (size_read < size_buf)
-                        if (feof(fin)==0)
+                    {
+                        if (feof(fin) == 0)
                         {
                             printf("error in reading %s\n",filenameinzip);
                             err = ZIP_ERRNO;
                         }
+                    }
 
-                        if (size_read>0)
+                    if (size_read > 0)
+                    {
+                        err = zipWriteInFileInZip (zf,buf,size_read);
+                        if (err < 0)
                         {
-                            err = zipWriteInFileInZip (zf,buf,size_read);
-                            if (err<0)
-                            {
-                                printf("error in writing %s in the zipfile\n",
-                                    basename);
-                            }
-
+                            printf("error in writing %s in the zipfile\n",
+                                basename);
                         }
+
+                    }
                 } while ((err == ZIP_OK) && (size_read>0));
             }
             if (fin)
