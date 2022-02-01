@@ -73,7 +73,7 @@ void change_file_date(const char *filename,
   HANDLE hFile;
   FILETIME ftm,ftLocal,ftCreate,ftLastAcc,ftLastWrite;
 
-  unused(tmu_date);
+  unused(tmu_date.tm_sec);
 
   hFile = CreateFile(filename,GENERIC_READ | GENERIC_WRITE,
                       0,NULL,OPEN_EXISTING,0,NULL);
