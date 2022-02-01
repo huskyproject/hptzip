@@ -148,7 +148,7 @@ hptzip_depend: $(hptzip_DEPS) ;
 $(hptzip_DEPS): $(hptzip_DEPDIR)%$(_DEP): $(hptzip_SRCDIR)%.c | $(hptzip_DEPDIR)
 	@set -e; rm -f $@; \
 	$(CC) -MM $(CFLAGS) $(hptzip_CDEFS) $< > $@.$$$$; \
-	sed 's,\($*\)$(_OBJ)[ :]*,$(hptzip_OBJDIR)\1$(_OBJ) $@ : ,g' < $@.$$$$ > $@; \
+	sed 's,\($*\)$(__OBJ)[ :]*,$(hptzip_OBJDIR)\1$(_OBJ) $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 
 $(hptzip_DEPDIR): | $(hptzip_BUILDDIR) do_not_run_depend_as_root
