@@ -32,7 +32,11 @@ hptzip_TARGETLIB := $(L)$(LIBPREFIX)$(hptzip_LIBNAME)$(LIBSUFFIX)$(_LIB)
 hptzip_TARGETDLL := $(B)$(DLLPREFIX)$(hptzip_LIBNAME)$(DLLSUFFIX)$(_DLL)
 
 ifeq ($(DYNLIBS), 1)
-    hptzip_TARGET = $(hptzip_TARGETDLL).$(hptzip_VER)
+    ifeq ($(findstring Windows,$(OS)),)
+        hptzip_TARGET = $(hptzip_TARGETDLL).$(hptzip_VER)
+    else
+        hptzip_TARGET = $(hptzip_TARGETDLL)
+    endif
 else
     hptzip_TARGET = $(hptzip_TARGETLIB)
 endif
@@ -40,7 +44,18 @@ endif
 hptzip_TARGET_BLD = $(hptzip_BUILDDIR)$(hptzip_TARGET)
 hptzip_TARGET_DST = $(LIBDIR_DST)$(hptzip_TARGET)
 
-hptzip_CDEFS := $(CDEFS) -I$(hptzip_ROOTDIR)$(hptzip_H_DIR) -I$(huskylib_ROOTDIR)
+# ZLIBHDIR may be defined in huskymak.cfg.mgw
+ifdef ZLIBHDIR
+    IZLIBHDIR := -I$(ZLIBHDIR)
+endif
+
+hptzip_CDEFS := $(CDEFS)
+ifeq ($(DYNLIBS),1)
+    ifneq ($(findstring Windows,$(OS)),)
+        hptzip_CDEFS += -D_MAKE_DLL
+    endif
+endif
+hptzip_CDEFS += $(IZLIBHDIR) -I$(hptzip_ROOTDIR)$(hptzip_H_DIR) -I$(huskylib_ROOTDIR)
 
 .PHONY: hptzip_build hptzip_install hptzip_install-dynlib \
         hptzip_uninstall hptzip_clean hptzip_distclean hptzip_depend \
@@ -61,19 +76,36 @@ $(hptzip_TARGET_BLD): $(hptzip_OBJDIR)$(hptzip_TARGET)
 	$(LN) $(LNHOPT) $< $(hptzip_BUILDDIR)
 
 # Build the static library
+# ZLIBL may be defined in huskymak.cfg.mgw
+ifdef ZLIBL
+$(hptzip_OBJDIR)$(hptzip_TARGETLIB): $(hptzip_OBJS) $(ZLIBL) | do_not_run_make_as_root
+	$(CP) $(ZLIBL) $(hptzip_OBJDIR); cd $(hptzip_OBJDIR); \
+    $(AR) $(AR_R) $(hptzip_TARGETLIB) $(^F)
+    ifdef RANLIB
+		cd $(hptzip_OBJDIR); $(RANLIB) $(hptzip_TARGETLIB)
+    endif
+else
 $(hptzip_OBJDIR)$(hptzip_TARGETLIB): $(hptzip_OBJS) | do_not_run_make_as_root
-	cd $(hptzip_OBJDIR); $(AR) $(AR_R) $(hptzip_TARGETLIB) $(^F)
-ifdef RANLIB
-	cd $(hptzip_OBJDIR); $(RANLIB) $(hptzip_TARGETLIB)
+	cd $(hptzip_OBJDIR); \
+	$(AR) $(AR_R) $(hptzip_TARGETLIB) $(^F)
+    ifdef RANLIB
+		cd $(hptzip_OBJDIR); $(RANLIB) $(hptzip_TARGETLIB)
+    endif
 endif
 
 # Build the dynamic library
-$(hptzip_OBJDIR)$(hptzip_TARGETDLL).$(hptzip_VER): $(hptzip_OBJS) | do_not_run_make_as_root
-ifeq (~$(MKSHARED)~,~ld~)
-	$(LD) $(LFLAGS) -o $@ -lz $(hptzip_OBJS)
-else
-	$(CC) $(LFLAGS) -shared -Wl,-soname,$(hptzip_TARGETDLL).$(hptzip_VER) \
-	-o $@ $(hptzip_OBJS)
+ifeq ($(DYNLIBS),1)
+$(hptzip_OBJDIR)$(hptzip_TARGET): $(hptzip_OBJS) | do_not_run_make_as_root
+    ifeq ($(findstring gcc,$(MKSHARED)),)
+		$(LD) $(LFLAGS) -o $@ $^ -lz
+    else
+        ifeq ($(findstring Windows,$(OS)),)
+			$(CC) $(LFLAGS) -shared -Wl,-soname,$(hptzip_TARGET) -o $@ $^ -lz
+        else
+			$(CC) $(LFLAGS) -shared -Wl,-soname,$(hptzip_TARGET) \
+			-o $@ $^ $(ZLIBL)
+        endif
+    endif
 endif
 
 # Compile .c files
