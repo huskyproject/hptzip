@@ -96,7 +96,7 @@ endif
 # Build the dynamic library
 ifeq ($(DYNLIBS),1)
 $(hptzip_OBJDIR)$(hptzip_TARGET): $(hptzip_OBJS) | do_not_run_make_as_root
-    ifeq ($(findstring gcc,$(MKSHARED)),)
+    ifeq ($(filter gcc clang,$(MKSHARED)),)
 		$(LD) $(LFLAGS) -o $@ $^ -lz
     else
         ifeq ($(findstring Windows,$(OS)),)
