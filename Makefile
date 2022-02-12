@@ -16,17 +16,6 @@ endif
 
 hptzip_OBJS := $(addprefix $(hptzip_OBJDIR),$(hptzip_OBJFILES))
 
-hptzip_DEPS := $(hptzip_OBJFILES)
-ifdef O
-    hptzip_DEPS := $(hptzip_DEPS:$(O)=)
-endif
-ifdef _OBJ
-    hptzip_DEPS := $(hptzip_DEPS:$(_OBJ)=$(_DEP))
-else
-    hptzip_DEPS := $(addsuffix $(_DEP),$(hptzip_DEPS))
-endif
-hptzip_DEPS := $(addprefix $(hptzip_DEPDIR),$(hptzip_DEPS))
-
 # Static and dynamic target libraries
 hptzip_TARGETLIB := $(L)$(LIBPREFIX)$(hptzip_LIBNAME)$(LIBSUFFIX)$(_LIB)
 hptzip_TARGETDLL := $(B)$(DLLPREFIX)$(hptzip_LIBNAME)$(DLLSUFFIX)$(_DLL)
@@ -171,21 +160,3 @@ ifeq ($(DYNLIBS), 1)
 else
     hptzip_uninstall: ;
 endif
-
-# Depend
-ifeq ($(MAKECMDGOALS),depend)
-hptzip_depend: $(hptzip_DEPS) ;
-
-# Build dependency makefiles for every source file
-$(hptzip_DEPS): $(hptzip_DEPDIR)%$(_DEP): $(hptzip_SRCDIR)%.c | $(hptzip_DEPDIR)
-	@set -e; rm -f $@; \
-	$(CC) -MM $(CFLAGS) $(hptzip_CDEFS) $< > $@.$$$$; \
-	sed 's,\($*\)$(__OBJ)[ :]*,$(hptzip_OBJDIR)\1$(_OBJ) $@ : ,g' < $@.$$$$ > $@; \
-	rm -f $@.$$$$
-
-$(hptzip_DEPDIR): | $(hptzip_BUILDDIR) do_not_run_depend_as_root
-	[ -d $@ ] || $(MKDIR) $(MKDIROPT) $@
-endif
-
-$(hptzip_BUILDDIR):
-	[ -d $@ ] || $(MKDIR) $(MKDIROPT) $@
