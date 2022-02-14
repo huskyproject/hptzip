@@ -5,16 +5,7 @@
 # Requires: husky enviroment
 #
 
-# Object files of the library
-# Please sort the list to make checking it by human easy
-hptzip_OBJFILES = $(O)hptzip$(_OBJ) $(O)ioapi$(_OBJ) $(O)unzip$(_OBJ) \
-                  $(O)zip$(_OBJ)
-
-ifneq ($(findstring MINGW,$(OStype)),)
-    hptzip_OBJFILES += $(O)iowin32$(_OBJ)
-endif
-
-hptzip_OBJS := $(addprefix $(hptzip_OBJDIR),$(hptzip_OBJFILES))
+hptzip_OBJS := $(hptzip_ALL_OBJS)
 
 # Static and dynamic target libraries
 hptzip_TARGETLIB := $(L)$(LIBPREFIX)$(hptzip_LIBNAME)$(LIBSUFFIX)$(_LIB)
